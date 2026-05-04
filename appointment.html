@@ -1,6 +1,10 @@
     <!DOCTYPE html>
     <html lang="en">
     <head>
+      
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <title>Appointment Booking</title>
@@ -177,6 +181,55 @@
   </div>
 </div>
     <script>
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXdP6EmwBEyGt7K6s8p3_QrqmbGZEzWAs",
+  authDomain: "appointmentaayushcare.firebaseapp.com",
+  projectId: "appointmentaayushcare",
+  storageBucket: "appointmentaayushcare.firebasestorage.app",
+  messagingSenderId: "784933001457",
+  appId: "1:784933001457:web:929f2bff52e69ee7a43150"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+async function saveAppointmentToFirebase(orderId) {
+
+  const data = {
+    orderId: orderId,
+    customerType: selectedCustomerType,
+
+    name: document.getElementById("newName")?.value || "",
+    contact: document.getElementById("newContact")?.value || "",
+    state: document.getElementById("newState")?.value || "",
+    district: document.getElementById("newDistrict")?.value || "",
+    place: document.getElementById("newPlace")?.value || "",
+    language: document.getElementById("newLanguage")?.value || "",
+    referral: document.getElementById("newReferral")?.value || "",
+    doctor: document.getElementById("newDoctor")?.value || "",
+
+    patientId: document.getElementById("customerId")?.value || "",
+
+    mode: document.querySelector('input[name="modeNew"]:checked')?.value ||
+          document.querySelector('input[name="modeOld"]:checked')?.value || "",
+
+    date: document.getElementById("appointmentDate")?.value || "",
+
+    slotStart: selectedSlot?.start || "",
+    slotEnd: selectedSlot?.end || "",
+    slotLabel: selectedSlot?.label || "",
+
+amount: currentAmount,
+status: "PENDING",
+createdAt: new Date().toISOString()
+  };
+
+  await db.ref("appointments/" + orderId).set(data);
+}
+
+
     /* ---------- CONFIG ---------- */
     const blockedDates = []; // add 'YYYY-MM-DD' if needed
     let daysBuffer = 2;
@@ -492,7 +545,15 @@ payButton.addEventListener('click', async () => {
     return;
   }
 
-  const upiUrl = buildUPILink(currentAmount);
+const upiUrl = buildUPILink(currentAmount);
+
+// SAFE: do NOT generate again if already created
+if (!currentTxnId) {
+  console.error("Txn ID missing!");
+  return;
+}
+
+await saveAppointmentToFirebase(currentTxnId);
 
   console.log("====== UPI LINK ======");
   console.log(upiUrl);
@@ -634,8 +695,38 @@ if (
   meresData.status === "SUCCESS" &&
   meresData.orderId === orderId
 ) {
-  clearInterval(interval);
-  window.location.href = "PaymentSuccess.html";
+
+  const snapshot = await db.ref("appointments/" + orderId).once("value");
+  const firebaseData = snapshot.val();
+
+  if (!firebaseData) {
+    clearInterval(interval);
+    alert("Order not found");
+    return;
+  }
+
+  if (firebaseData.status === "PAID") {
+    clearInterval(interval);
+    alert("Order already used");
+    return;
+  }
+
+  const expectedAmount = parseFloat(firebaseData.amount);
+  const paidAmount = parseFloat(meresData.amount);
+
+  if (expectedAmount === paidAmount) {
+
+    await db.ref("appointments/" + orderId).update({
+      status: "PAID"
+    });
+
+    clearInterval(interval);
+    window.location.href = "PaymentSuccess.html";
+
+  } else {
+    clearInterval(interval);
+    alert("Amount mismatch - Tampering detected");
+  }
 }
 
 else if (meresData && meresData.status === "FAILED") {
