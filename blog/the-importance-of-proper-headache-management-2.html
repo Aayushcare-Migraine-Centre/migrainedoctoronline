@@ -26,7 +26,197 @@
 		]
 }</script>
     <meta name="theme-color" content="#7391c4">
-  <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
+  <meta data-intl-tel-input-cdn-path="intlTelInput/">
+
+	<style>
+		/* BLOG SECTION */
+.custom-blog-section{
+  background: #f4f7fb;
+  padding: 60px 20px;
+}
+
+.blog-container{
+  max-width: 950px;
+  margin: auto;
+}
+
+/* MAIN BLOG CARD */
+.blog-card{
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+  transition: all 0.4s ease;
+}
+
+.blog-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.12);
+}
+
+/* IMAGE */
+.blog-image{
+  width: 100%;
+  border-radius: 18px;
+  margin-bottom: 30px;
+  transition: transform 0.5s ease;
+}
+
+.blog-image:hover{
+  transform: scale(1.02);
+}
+
+/* TITLE */
+.blog-title{
+  font-size: 42px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+/* AUTHOR */
+.blog-author{
+  font-size: 17px;
+  color: #2563eb;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* META */
+.blog-meta{
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* INTRO */
+.blog-intro{
+  font-size: 20px;
+  line-height: 1.9;
+  color: #334155;
+  background: #f8fafc;
+  padding: 25px;
+  border-left: 5px solid #2563eb;
+  border-radius: 12px;
+  margin-bottom: 40px;
+}
+
+/* SECTION */
+.blog-section{
+  margin-bottom: 40px;
+}
+
+/* HEADINGS */
+.blog-section h2{
+  font-size: 30px;
+  margin-bottom: 18px;
+  color: #0f172a;
+  position: relative;
+  padding-left: 18px;
+}
+
+.blog-section h2::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 6px;
+  height: 32px;
+  background: #2563eb;
+  border-radius: 10px;
+}
+
+/* PARAGRAPHS */
+.blog-section p{
+  font-size: 18px;
+  line-height: 1.9;
+  color: #334155;
+}
+
+/* HIGHLIGHT POINTS */
+.blog-item{
+  background: linear-gradient(135deg, #f8fafc, #eef4ff);
+  border-left: 5px solid #2563eb;
+  padding: 18px 22px;
+  margin: 16px 0;
+  border-radius: 14px;
+  transition: all 0.35s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.blog-item::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(37,99,235,0.08);
+  transition: all 0.5s ease;
+}
+
+.blog-item:hover::before{
+  left: 0;
+}
+
+.blog-item:hover{
+  transform: translateX(8px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.18);
+  border-left-color: #1d4ed8;
+}
+
+.blog-item p{
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+/* STRONG TEXT */
+.blog-item strong{
+  color: #0f172a;
+}
+
+/* CONCLUSION */
+.blog-section:last-child{
+  background: #eff6ff;
+  padding: 28px;
+  border-radius: 18px;
+  border: 1px solid #bfdbfe;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+  .blog-card{
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .blog-title{
+    font-size: 30px;
+  }
+
+  .blog-section h2{
+    font-size: 24px;
+  }
+
+  .blog-section p,
+  .blog-item p{
+    font-size: 16px;
+  }
+
+  .blog-intro{
+    font-size: 17px;
+  }
+}
+	</style>
+</head>
   <body data-path-to-root="./" data-include-products="false" class="u-body u-xl-mode" data-lang="en"><header class="u-clearfix u-color-var u-header u-sticky u-sticky-05c4 u-header" id="header"><div class="u-clearfix u-sheet u-valign-middle-md u-sheet-1">
         <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1" role="navigation">
           <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
@@ -82,81 +272,61 @@ c5.5,0,9.9,4.5,9.9,9.9V73.3z"></path></svg></span>
 <section class="custom-blog-section">
   <div class="blog-container">
 
-    <div class="blog-card">
+<div class="blog-card">
 
-      <img src="../images/blg2.jpg" class="blog-image">
+  <img src="../images/blg1.jpg" class="blog-image">
 
-      <h1 class="blog-title">The Importance of Proper Headache Management</h1>
+  <h1 class="blog-title">NASAL OBSTRUCTION AND HEADACHE SIDE CORRELATION IN MIGRAINE PATIENTS: A CLINICAL PERSPECTIVE</h1>
 
-      <div class="blog-meta">
-        <span>Jul 22, 2025</span> • <span>Travel</span> • <span>Comments (0)</span>
-      </div>
+  <p class="blog-author">
+    By <strong>Dr. Sangeerth</strong>
+  </p>
 
-      <p class="blog-intro">
-        Headaches are among the most common ailments affecting people of all ages. While occasional headaches can be linked to stress, fatigue, or dehydration, persistent or severe headaches require proper management to ensure they do not disrupt daily life or mask underlying health issues.
-      </p>
+  <div class="blog-meta">
+    <span>Health</span> • <span>Comments (0)</span>
+  </div>
 
-      <div class="blog-section">
-        <h2>Types of Headaches</h2>
-        <p>Understanding the type of headache is the first step toward effective management. The most common types include:</p>
+  <p class="blog-intro">
+    Migraine, a complex neurological condition characterized by recurrent, often severe, headaches, has baffled medical professionals for decades. While its precise etiology remains elusive, it has firmly established itself as a widespread global health issue, significantly impacting the quality of life for millions. Simultaneously, common ear, nose, and throat (ENT) complaints, such as nasal congestion or partial nasal obstruction—even in just one nostril—are among the most frequently encountered issues in general practice. Conditions like Deviated Nasal Septum (DNS), nasal polyps, and chronic inflammation of the paranasal sinuses are often the underlying culprits leading to persistent nasal blockage.
+  </p>
 
-        <div class="blog-item">
-          <h4>Tension Headaches</h4>
-          <p>Often caused by stress or muscle strain, these headaches create a constant, dull ache around the forehead or back of the head.</p>
-        </div>
+  <div class="blog-section">
+    <p>
+      A surprising and clinically significant observation centers on the apparent correlation between the side of a unilateral headache and the side of a corresponding nasal obstruction. Clinical observations strongly suggest that individuals experiencing one-sided (unilateral) migraines or severe headaches often exhibit some degree of airflow obstruction or blockage in the nostril on the same side as the headache. This correlation hints at a potential, previously underappreciated, link between the upper respiratory system and the mechanisms that trigger or exacerbate migraine attacks.
+    </p>
+  </div>
 
-        <div class="blog-item">
-          <h4>Migraines</h4>
-          <p>These neurological headaches are intense and may include nausea, sensitivity to light and sound, and throbbing pain, often on one side of the head.</p>
-        </div>
+  <div class="blog-section">
+    <p>
+      Evidence-based research and multiple clinical studies lend substantial credibility to this observation, indicating that this side-to-side correlation is manifest in approximately 75% of migraine patients studied. Our own internal clinical data analysis, focusing on migraine patients treated within the last month, further substantiates this finding. A significant portion of these patients had a documented history of recurrent common colds, seasonal allergies, or Allergic Rhinitis in the years preceding their diagnosis.
+    </p>
+  </div>
 
-        <div class="blog-item">
-          <h4>Cluster Headaches</h4>
-          <p>Severe, recurring headaches that occur in cyclical patterns, usually around one eye or side of the head.</p>
-        </div>
+  <div class="blog-section">
+    <p>
+      Upon detailed physical examination, it was consistently evident that these patients presented with mild to severe physical obstruction in one or both nostrils. Crucially, in cases of unilateral obstruction, the headache was predominantly reported on the corresponding side.
+    </p>
+  </div>
 
-        <div class="blog-item">
-          <h4>Sinus Headaches</h4>
-          <p>Caused by sinus infections or allergies, they often present with pressure around the nose, eyes, and forehead. Proper diagnosis is crucial to differentiate between these types.</p>
-        </div>
-      </div>
+  <div class="blog-section">
+    <p>
+      A concerning secondary observation relates to the long-term use of certain common medications. The chronic and frequent reliance on over-the-counter Antihihistamines and topical Nasal Sprays, commonly used to manage the symptoms of nasal obstruction and allergy, appears to have an adverse effect on the progression of the migraine condition in these specific patients. Over a period of years, the prolonged use of these agents was clinically associated with an observed increase in both the frequency and the overall severity of their migraine headaches. This suggests a need for caution and closer monitoring of pharmacotherapy in this patient subgroup.
+    </p>
+  </div>
 
-      <div class="blog-section">
-        <h2>Steps for Effective Headache Management</h2>
+  <div class="blog-section">
+    <p>
+      Such precise clinical correlations—linking an ENT pathology with the laterality of a neurological condition—are pivotal to the dynamics of diagnosing, treating, and achieving sustainable healing for chronic illnesses like migraine. Recognizing and addressing the underlying nasal obstruction, in addition to standard migraine treatment protocols, opens a pathway to potentially achieve marginally high standards in the overall management of migraine headaches.
+    </p>
+  </div>
 
-        <div class="blog-item">
-          <h4>Identify Triggers</h4>
-          <p>Maintaining a headache diary can help pinpoint triggers such as stress, lack of sleep, certain foods, dehydration, or hormonal changes.</p>
-        </div>
+  <div class="blog-section">
+    <p>
+      Therefore, a heightened awareness of this direct clinical correlation is imperative for all healthcare providers involved in the management of chronic headaches. Incorporating a thorough ENT assessment into the diagnostic workup for migraine patients can lead to more effective, personalized management strategies, ultimately offering a meaningful improvement in the quality of life for those who suffer from this debilitating condition.
+    </p>
+  </div>
 
-        <div class="blog-item">
-          <h4>Seek Professional Evaluation</h4>
-          <p>Frequent headaches should not be dismissed. Consulting a healthcare provider ensures that the root cause is accurately identified.</p>
-        </div>
-
-        <div class="blog-item">
-          <h4>Adopt a Holistic Approach</h4>
-          <p>Combines lifestyle changes, medication, and alternative therapies like homeopathy, acupuncture, or relaxation techniques.</p>
-        </div>
-
-        <div class="blog-item">
-          <h4>Avoid Overmedication</h4>
-          <p>Overusing pain relievers can lead to rebound headaches, worsening the problem over time.</p>
-        </div>
-      </div>
-
-      <div class="blog-section">
-        <h2>The Role of Preventive Care</h2>
-        <p>
-          For chronic headaches, preventive measures are just as important as treatments. These may include stress management techniques, sleep hygiene practices, and targeted therapies.
-        </p>
-
-        <p>
-          Headaches can significantly impact quality of life if not managed properly. A proactive and informed approach can provide long-term relief and prevent complications.
-        </p>
-      </div>
-
-    </div>
+</div>
   </div>
 </section>
     
