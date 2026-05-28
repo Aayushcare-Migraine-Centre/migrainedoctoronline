@@ -577,6 +577,15 @@
                             <option value="No">No</option>
                           </select>
                         </div>
+                                    <!-- Q4: Vertigo -->
+<div class="field">
+  <label for="vertigo">Vertigo?</label>
+  <select id="vertigo" required>
+    <option value="">Select</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+</div>
                         <div class="field" id="painkillerDetailsField" style="display:none;">
                           <label for="painkillerDetails">Painkiller Details</label>
                           <input 
@@ -585,6 +594,7 @@
               placeholder="Enter name/details"
               maxlength="100"
             />
+
                         </div>
                         <div class="actions">
                           <button class="btn" id="saveBtn">Save</button>
@@ -787,15 +797,16 @@ patientInput.addEventListener("input", () => {
               }
 
               const filters = JSON.stringify([["patient", "=", window.loggedInPatientId]]);
-    const fields = JSON.stringify([
-      "name",   // ⭐ THIS IS REQUIRED
-      "date",
-      "duration",
-      "intensity",
-      "pain_killer",
-      "pain_killer_details",
-      "creation"
-    ]);
+const fields = JSON.stringify([
+  "name",
+  "date",
+  "duration",
+  "intensity",
+  "pain_killer",
+  "pain_killer_details",
+  "vertigo",
+  "creation"
+]);
 
         const url =
           "https://software.aayushcare.com/api/resource/Migraine%20Diary" +
@@ -816,14 +827,15 @@ patientInput.addEventListener("input", () => {
 
                 if (json.data) {
                   json.data.forEach(entry => {
-    allEntries[entry.date] = {
-      name: entry.name,   // ⭐ IMPORTANT
-      duration: entry.duration,
-      intensity: entry.intensity,
-      painkiller: entry.pain_killer,
-      painkillerDetails: entry.pain_killer_details,
-      creation: entry.creation
-    };       });
+allEntries[entry.date] = {
+  name: entry.name,
+  duration: entry.duration,
+  intensity: entry.intensity,
+  painkiller: entry.pain_killer,
+  painkillerDetails: entry.pain_killer_details,
+  vertigo: entry.vertigo,
+  creation: entry.creation
+};     });
                 }
 
                 return allEntries;
@@ -849,6 +861,7 @@ patientInput.addEventListener("input", () => {
               const painkiller=document.getElementById('painkiller');
               const painkillerDetails=document.getElementById('painkillerDetails');
               const painkillerDetailsField=document.getElementById('painkillerDetailsField');
+              const vertigo=document.getElementById('vertigo');
               const saveBtn=document.getElementById('saveBtn');
 
             // Fill duration dropdown (Custom Ranges)
@@ -974,6 +987,7 @@ patientInput.addEventListener("input", () => {
               intensity.value = data.intensity || '';
               painkiller.value = data.painkiller || '';
               painkillerDetails.value = data.painkillerDetails || '';
+              vertigo.value = data.vertigo || '';
               painkiller.dispatchEvent(new Event('change'));
 
         if (all[key]) {
@@ -985,12 +999,14 @@ patientInput.addEventListener("input", () => {
             intensity.disabled = true;
             painkiller.disabled = true;
             painkillerDetails.disabled = true;
+            vertigo.disabled = true;
             saveBtn.style.display = "none";
           } else {
             duration.disabled = false;
             intensity.disabled = false;
             painkiller.disabled = false;
             painkillerDetails.disabled = false;
+            vertigo.disabled = false;
             saveBtn.style.display = "block";
           }
 
@@ -1013,6 +1029,7 @@ patientInput.addEventListener("input", () => {
         !duration.value ||
         !intensity.value ||
         !painkiller.value ||
+        !vertigo.value ||
         (painkiller.value === "Yes" && !painkillerDetails.value)
       ) {
         alert("Please fill all required fields");
@@ -1021,14 +1038,15 @@ patientInput.addEventListener("input", () => {
 
       const existing = allEntries[activeKey];
 
-      const payload = {
-        patient: window.loggedInPatientId,
-        date: activeKey,
-        duration: duration.value,
-        intensity: intensity.value,
-        pain_killer: painkiller.value,
-        pain_killer_details: painkillerDetails.value
-      };
+const payload = {
+  patient: window.loggedInPatientId,
+  date: activeKey,
+  duration: duration.value,
+  intensity: intensity.value,
+  pain_killer: painkiller.value,
+  pain_killer_details: painkillerDetails.value,
+  vertigo: vertigo.value
+};
 
       try {
 
@@ -1076,14 +1094,15 @@ patientInput.addEventListener("input", () => {
           );
         }
 
-    allEntries[activeKey] = {
-      name: existing?.name || json.data.name,
-      creation: existing?.creation || json.data.creation,  // ⭐ keep this
-      duration: payload.duration,
-      intensity: payload.intensity,
-      painkiller: payload.pain_killer,
-      painkillerDetails: payload.pain_killer_details
-    };
+allEntries[activeKey] = {
+  name: existing?.name || json.data.name,
+  creation: existing?.creation || json.data.creation,
+  duration: payload.duration,
+  intensity: payload.intensity,
+  painkiller: payload.pain_killer,
+  painkillerDetails: payload.pain_killer_details,
+  vertigo: payload.vertigo
+};
 
         showSuccessToast();
         render();
