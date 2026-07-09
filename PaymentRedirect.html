@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Processing Payment...</title>
+
+<style>
+:root{
+  --primary:#83358F;
+  --bg:#f4f6fb;
+  --text:#333;
+  --success:#28a745;
+  --fail:#d9534f;
+  --pending:#f0ad4e;
+}
+
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  color:var(--text);
+}
+
+.card{
+  background:#fff;
+  padding:40px 30px;
+  border-radius:16px;
+  text-align:center;
+  max-width:420px;
+  width:90%;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  animation:fadeIn .6s ease;
+}
+
+h1{
+  margin:15px 0 10px;
+  color:var(--primary);
+}
+
+p{
+  font-size:15px;
+  color:#666;
+}
+
+.timer{
+  margin-top:15px;
+  font-size:14px;
+  color:#888;
+}
+
+.home-btn{
+  display:inline-block;
+  margin-top:25px;
+  padding:12px 26px;
+  background:var(--primary);
+  color:#fff;
+  text-decoration:none;
+  border-radius:8px;
+  font-weight:600;
+  transition:.3s;
+}
+
+.home-btn:hover{
+  background:#6a2c72;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(15px);}
+  to{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+  <h1>Processing Payment...</h1>
+  <p>Please wait while we verify your transaction.</p>
+</div>
+
+<script>
+function getParams() {
+  const params = {};
+  const queryString = window.location.search.substring(1);
+  const pairs = queryString.split("&");
+
+  pairs.forEach(pair => {
+    const [key, value] = pair.split("=");
+    params[decodeURIComponent(key)] = decodeURIComponent(value || "");
+  });
+
+  return params;
+}
+
+async function checkStatus() {
+  const params = getParams();
+
+  // Extract signature & algorithm
+  const signature = params.signature;
+  const signatureAlgorithm = params.signature_algorithm;
+
+  if (!signature || !signatureAlgorithm) {
+    document.getElementById("card").innerHTML = `
+      <h1 style="color:var(--fail)">Error</h1>
+      <p>No signature received. Signed response may not be enabled.</p>
+    `;
+    return;
+  }
+
+  // Send everything to backend for signature verification
+  const res = await fetch("/.netlify/functions/verifySignedResponse", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params)
+  });
+
+  const data = await res.json();
+  const card = document.getElementById("card");
+
+  if (data.verified && data.status === "CHARGED") {
+    card.innerHTML = `
+      <h1 style="color:var(--success)">Payment Successful</h1>
+      <p>Your payment has been verified successfully.</p>
+      <div class="timer">Redirecting to home in <span id="count">5</span> seconds...</div>
+      <a href="index.html" class="home-btn">Go to Home</a>
+    `;
+    startRedirectTimer();
+  }
+
+  else if (!data.verified) {
+    card.innerHTML = `
+      <h1 style="color:var(--fail)">Signature Mismatch</h1>
+      <p>The payment response could not be verified.</p>
+      <a href="index.html" class="home-btn">Go to Home</a>
+    `;
+  }
+
+  else {
+    card.innerHTML = `
+      <h1 style="color:var(--pending)">Payment Pending</h1>
+      <p>Your payment is still being processed.</p>
+    `;
+  }
+}
+
+function startRedirectTimer() {
+  let time = 5;
+  const count = document.getElementById("count");
+
+  const timer = setInterval(()=>{
+    time--;
+    count.textContent = time;
+
+    if(time === 0){
+      clearInterval(timer);
+      window.location.href = "index.html";
+    }
+  },1000);
+}
+
+checkStatus();
+</script>
+
+</body>
+</html>
