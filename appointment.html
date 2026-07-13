@@ -4,6 +4,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
+    <link rel="stylesheet" href="styles/payspinner.css" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Appointment Booking</title>
@@ -910,6 +912,8 @@
           return;
         }
 
+        document.getElementById("premiumOverlay").style.display = "flex";
+
         try {
           const res = await fetch(
             "https://hdfc-payment-gateway.netlify.app/.netlify/functions/create-order",
@@ -939,6 +943,7 @@
           window.location.href = data.payment_links.web;
         } catch (err) {
           alert("Network error. Please try again.");
+          document.getElementById("premiumOverlay").style.display = "none";
         }
 
         /* const upiUrl = buildUPILink(currentAmount);
@@ -1160,5 +1165,14 @@
         window.selectedCustomerType = selectedCustomerType;
       });
     </script>
+    <!-- Your page content here -->
+
+    <!-- Spinner Overlay -->
+    <div id="premiumOverlay" class="premium-overlay" style="display: none">
+      <div class="premium-loader-box">
+        <div class="premium-spinner"></div>
+        <div class="premium-text">Securely connecting to payment gateway…</div>
+      </div>
+    </div>
   </body>
 </html>
