@@ -1,779 +1,1164 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>Appointment Booking</title>
-      <style>
-        :root{--primary-color:#83358F;--bg-color:#f9f9f9;--border-color:#ddd;--font-color:#333}
-        body{font-family:"Segoe UI",sans-serif;background:var(--bg-color);color:var(--font-color);padding:20px;margin:0}
-        .container{max-width:600px;margin:auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-        .logo{width:200px;display:block;margin:0 auto 20px;height:auto}
-        h2{text-align:center;margin-bottom:25px;color:var(--primary-color)}
-        .customer-tabs{display:flex;justify-content:center;margin-bottom:25px;gap:10px}
-        .tab{flex:1;text-align:center;padding:12px 16px;border-radius:8px;background:#e0e0e0;color:#333;cursor:pointer;font-weight:700;transition:background .3s;border:2px solid transparent}
-        .tab.active{background:var(--primary-color);color:#fff;border-color:var(--primary-color);box-shadow:0 4px 10px rgba(131,53,143,.3)}
-        .section{margin-bottom:20px}
-        label{display:block;margin-bottom:10px}
-        input[type="text"],input[type="tel"],select,input[type="date"]{width:100%;padding:10px;margin-top:5px;border:1px solid var(--border-color);border-radius:6px;font-size:16px;outline:none;transition:border-color .3s,box-shadow .3s}
-          input:focus,select:focus{border-color:var(--primary-color);box-shadow:0 0 5px rgba(131,53,143,.4)}
-        .radio-group{display:flex;gap:15px;margin-top:10px}
-        .time-range{margin:15px 0;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-        .slots-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-        .slot{background:#fff;border:1px solid var(--border-color);border-radius:6px;cursor:pointer;transition:background .2s,color .2s;border-color .2s;font-size:16px;font-weight:700;text-align:center;flex:0 0 150px;height:50px;display:flex;align-items:center;justify-content:center;padding:6px}
-        .slot:hover{background:var(--primary-color);color:#fff}
-        .slot.selected{background:var(--primary-color);color:#fff;border-color:var(--primary-color);box-shadow:0 0 8px rgba(131,53,143,.4)}
-        .hidden{display:none}
-        .large-slot{flex:0 1 30%;min-width:130px;max-width:160px;height:60px;padding:8px 4px;font-size:18px;font-weight:600;border:2px solid var(--border-color);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;transition:all .25s}
-        .large-slot:hover{background:var(--primary-color);color:#fff;transform:translateY(-2px)}
-        button{background:var(--primary-color);color:#fff;font-size:18px;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer}
-        @media(max-width:600px){.large-slot{flex:1 1 100%;max-width:none}}
-        .test-banner {
-  background: #ffcc00;
-  color: #000;
-  padding: 12px;
-  text-align: center;
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  border-bottom: 2px solid #e6b800;
-}
-        /* follow-up small uniform slots */
-    .small-slot{
-      flex: 0 0 90px;           /* fixed narrow width */
-      height: 36px;             /* shorter height */
-      font-size: 14px;          /* smaller text */
-      padding: 4px 6px;
-      border-radius: 6px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-sizing: border-box;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    @media (max-width:600px){
-      .small-slot{flex:0 0 72px;height:34px;font-size:13px}
-    }
-
-      </style>
-    </head>
-    <body>
-      <div class="test-banner">
-  ⚠️ This is a TEST environment. No real appointments are booked and no actual money is transferred.
-</div>
-      <div class="container">
-        <img src="images/aayushcarelogowhite.jpg" alt="Aayush Care Logo" class="logo">
-        <h2>Book Appointment</h2>
-
-        <div class="customer-tabs">
-          <div class="tab active" data-type="new">New Patient</div>
-          <div class="tab" data-type="old">Follow Up</div>
-        </div>
-
-        <div class="section" id="newCustomerSection">
-          <label>Name: <input type="text" id="newName" placeholder="Enter full name" /></label>
-          <label>Contact No: <input type="tel" id="newContact" placeholder="Enter contact number" /></label>
-          <label>State:
-            <select id="newState">
-              <option value="">-- Select State --</option>
-              <option value="kerala">Kerala</option>
-              <option value="tamilnadu">Tamil Nadu</option>
-              <option value="karnataka">Karnataka</option>
-            </select>
-          </label>
-          <label>District:
-            <select id="newDistrict" disabled><option value="">-- Select District --</option></select>
-          </label>
-          <label>Place: <input type="text" id="newPlace" placeholder="Enter place" /></label>
-          <label>Preferred Language:
-            <select id="newLanguage">
-              <option value="">-- Select Language --</option>
-              <option value="english">English</option>
-              <option value="malayalam">Malayalam</option>
-              <option value="hindi">Hindi</option>
-              <option value="telugu">Telugu</option>
-              <option value="tamil">Tamil</option>
-            </select>
-          </label>
-          <label>How did you hear about us:
-            <select id="newReferral">
-              <option value="">-- Select Option --</option>
-              <option value="social_media">Social Media</option>
-              <option value="friend_family">Friend/Family</option>
-              <option value="doctor_referral">Doctor Referral</option>
-              <option value="google">Google Search</option>
-              <option value="walkin">Walk-in</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <label>Choose Doctor:
-            <select id="newDoctor">
-              <option value="">-- Select Doctor --</option>
-              <option value="junior_consulting">Junior / Consulting</option>
-              <option value="consultant_alex">Consultant + Dr Alex</option>
-              <option value="alex_only">Dr Alex Only</option>
-            </select>
-          </label>
-          <label>Mode of Appointment:</label>
-          <div class="radio-group">
-            <label><input type="radio" name="modeNew" value="online"> Online</label>
-            <label><input type="radio" name="modeNew" value="offline"> Offline</label>
-          </div>
-        </div>
-
-        <div class="section hidden" id="oldCustomerSection">
-          <label>Enter Patient ID: <input type="text" id="customerId" placeholder="E.g., 12345ABC" />
-            <div id="patientNameDisplay" class="hidden" style="margin-top:10px;font-weight:700"></div>
-          </label>
-          <label>Mode of Appointment:</label>
-          <div class="radio-group">
-            <label><input type="radio" name="modeOld" value="online"> Online</label>
-            <label><input type="radio" name="modeOld" value="offline"> Offline</label>
-          </div>
-        </div>
-
-        <label>Select Date: <input type="date" id="appointmentDate" style="cursor:pointer" /></label>
-        <div id="dateHelp" style="font-size:13px;color:#666;margin-top:6px">Appointments must be booked at least 2 days in advance.</div>
-        <div id="blockedDatesList" style="font-size:13px;color:#a33;margin-top:6px;display:none"></div>
-
-        <div id="timeRangeSection" class="section hidden">
-          <h4>Select Time Range:</h4>
-          <!-- labels match config -->
-          <div id="timeRangeRadios" class="time-range"></div>
-        </div>
-
-        <div class="section hidden" id="slotSection">
-          <h4>Available Slots:</h4>
-          <div id="slotsContainer" class="slots-grid"></div>
-        </div>
-  <div id="paymentSection" class="section hidden" style="text-align:center;margin-top:25px">
-    <h3>Total Consultation Fee</h3>
-    <div id="priceDisplay" style="font-size:26px;font-weight:800;color:#83358F;margin:10px 0">
-      ₹0
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointment Booking</title>
+    <style>
+              :root{--primary-color:#83358F;--bg-color:#f9f9f9;--border-color:#ddd;--font-color:#333}
+              body{font-family:"Segoe UI",sans-serif;background:var(--bg-color);color:var(--font-color);padding:20px;margin:0}
+              .container{max-width:600px;margin:auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+              .logo{width:200px;display:block;margin:0 auto 20px;height:auto}
+              h2{text-align:center;margin-bottom:25px;color:var(--primary-color)}
+              .customer-tabs{display:flex;justify-content:center;margin-bottom:25px;gap:10px}
+              .tab{flex:1;text-align:center;padding:12px 16px;border-radius:8px;background:#e0e0e0;color:#333;cursor:pointer;font-weight:700;transition:background .3s;border:2px solid transparent}
+              .tab.active{background:var(--primary-color);color:#fff;border-color:var(--primary-color);box-shadow:0 4px 10px rgba(131,53,143,.3)}
+              .section{margin-bottom:20px}
+              label{display:block;margin-bottom:10px}
+              input[type="text"],input[type="tel"],select,input[type="date"]{width:100%;padding:10px;margin-top:5px;border:1px solid var(--border-color);border-radius:6px;font-size:16px;outline:none;transition:border-color .3s,box-shadow .3s}
+                input:focus,select:focus{border-color:var(--primary-color);box-shadow:0 0 5px rgba(131,53,143,.4)}
+              .radio-group{display:flex;gap:15px;margin-top:10px}
+              .time-range{margin:15px 0;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+              .slots-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+              .slot{background:#fff;border:1px solid var(--border-color);border-radius:6px;cursor:pointer;transition:background .2s,color .2s;border-color .2s;font-size:16px;font-weight:700;text-align:center;flex:0 0 150px;height:50px;display:flex;align-items:center;justify-content:center;padding:6px}
+              .slot:hover{background:var(--primary-color);color:#fff}
+              .slot.selected{background:var(--primary-color);color:#fff;border-color:var(--primary-color);box-shadow:0 0 8px rgba(131,53,143,.4)}
+              .hidden{display:none}
+              .large-slot{flex:0 1 30%;min-width:130px;max-width:160px;height:60px;padding:8px 4px;font-size:18px;font-weight:600;border:2px solid var(--border-color);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;transition:all .25s}
+              .large-slot:hover{background:var(--primary-color);color:#fff;transform:translateY(-2px)}
+              button{background:var(--primary-color);color:#fff;font-size:18px;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer}
+              @media(max-width:600px){.large-slot{flex:1 1 100%;max-width:none}}
+              .test-banner {
+        background: #ffcc00;
+        color: #000;
+        padding: 12px;
+        text-align: center;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        border-bottom: 2px solid #e6b800;
+      }
+              /* follow-up small uniform slots */
+          .small-slot{
+            flex: 0 0 90px;           /* fixed narrow width */
+            height: 36px;             /* shorter height */
+            font-size: 14px;          /* smaller text */
+            padding: 4px 6px;
+            border-radius: 6px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-sizing: border-box;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+          }
+          @media (max-width:600px){
+            .small-slot{flex:0 0 72px;height:34px;font-size:13px}
+          }
+    </style>
+  </head>
+  <body>
+    <div class="test-banner">
+      ⚠️ This is a TEST environment. No real appointments are booked and no
+      actual money is transferred.
     </div>
-    <button id="payButton" type="button">Pay Now</button>
-  </div>
+    <div class="container">
+      <img
+        src="images/aayushcarelogowhite.jpg"
+        alt="Aayush Care Logo"
+        class="logo"
+      />
+      <h2>Book Appointment</h2>
+
+      <div class="customer-tabs">
+        <div class="tab active" data-type="new">New Patient</div>
+        <div class="tab" data-type="old">Follow Up</div>
       </div>
 
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+      <div class="section" id="newCustomerSection">
+        <label
+          >Name: <input type="text" id="newName" placeholder="Enter full name"
+        /></label>
+        <label
+          >Contact No:
+          <input type="tel" id="newContact" placeholder="Enter contact number"
+        /></label>
+        <label
+          >State:
+          <select id="newState">
+            <option value="">-- Select State --</option>
+            <option value="kerala">Kerala</option>
+            <option value="tamilnadu">Tamil Nadu</option>
+            <option value="karnataka">Karnataka</option>
+          </select>
+        </label>
+        <label
+          >District:
+          <select id="newDistrict" disabled>
+            <option value="">-- Select District --</option>
+          </select>
+        </label>
+        <label
+          >Place: <input type="text" id="newPlace" placeholder="Enter place"
+        /></label>
+        <label
+          >Preferred Language:
+          <select id="newLanguage">
+            <option value="">-- Select Language --</option>
+            <option value="english">English</option>
+            <option value="malayalam">Malayalam</option>
+            <option value="hindi">Hindi</option>
+            <option value="telugu">Telugu</option>
+            <option value="tamil">Tamil</option>
+          </select>
+        </label>
+        <label
+          >How did you hear about us:
+          <select id="newReferral">
+            <option value="">-- Select Option --</option>
+            <option value="social_media">Social Media</option>
+            <option value="friend_family">Friend/Family</option>
+            <option value="doctor_referral">Doctor Referral</option>
+            <option value="google">Google Search</option>
+            <option value="walkin">Walk-in</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label
+          >Choose Doctor:
+          <select id="newDoctor">
+            <option value="">-- Select Doctor --</option>
+            <option value="junior_consulting">Junior / Consulting</option>
+            <option value="consultant_alex">Consultant + Dr Alex</option>
+            <option value="alex_only">Dr Alex Only</option>
+          </select>
+        </label>
+        <label>Mode of Appointment:</label>
+        <div class="radio-group">
+          <label
+            ><input type="radio" name="modeNew" value="online" /> Online</label
+          >
+          <label
+            ><input type="radio" name="modeNew" value="offline" />
+            Offline</label
+          >
+        </div>
+      </div>
 
-<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-  
-  <div style="background:#fff; padding:25px; border-radius:12px; text-align:center; width:320px; position:relative;">
-    
-    <button onclick="closeQR()" style="position:absolute; top:10px; right:12px; border:none; background:none; font-size:18px; cursor:pointer;">✖</button>
+      <div class="section hidden" id="oldCustomerSection">
+        <label
+          >Enter Patient ID:
+          <input type="text" id="customerId" placeholder="E.g., 12345ABC" />
+          <div
+            id="patientNameDisplay"
+            class="hidden"
+            style="margin-top: 10px; font-weight: 700"
+          ></div>
+        </label>
+        <label>Mode of Appointment:</label>
+        <div class="radio-group">
+          <label
+            ><input type="radio" name="modeOld" value="online" /> Online</label
+          >
+          <label
+            ><input type="radio" name="modeOld" value="offline" />
+            Offline</label
+          >
+        </div>
+      </div>
 
-    <h3>Scan to Pay</h3>
+      <label
+        >Select Date:
+        <input type="date" id="appointmentDate" style="cursor: pointer"
+      /></label>
+      <div id="dateHelp" style="font-size: 13px; color: #666; margin-top: 6px">
+        Appointments must be booked at least 2 days in advance.
+      </div>
+      <div
+        id="blockedDatesList"
+        style="font-size: 13px; color: #a33; margin-top: 6px; display: none"
+      ></div>
 
-    <div id="qrCode" style="margin:15px 0;"></div>
+      <div id="timeRangeSection" class="section hidden">
+        <h4>Select Time Range:</h4>
+        <!-- labels match config -->
+        <div id="timeRangeRadios" class="time-range"></div>
+      </div>
 
-    <div style="margin:10px 0; font-weight:bold;">OR</div>
+      <div class="section hidden" id="slotSection">
+        <h4>Available Slots:</h4>
+        <div id="slotsContainer" class="slots-grid"></div>
+      </div>
+      <div
+        id="paymentSection"
+        class="section hidden"
+        style="text-align: center; margin-top: 25px"
+      >
+        <h3>Total Consultation Fee</h3>
+        <div
+          id="priceDisplay"
+          style="
+            font-size: 26px;
+            font-weight: 800;
+            color: #83358f;
+            margin: 10px 0;
+          "
+        >
+          ₹0
+        </div>
+        <button id="payButton" type="button">Pay Now</button>
+      </div>
+    </div>
 
-    <button id="upiBtn" style="width:100%;">Open UPI App</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  </div>
-</div>
+    <div
+      id="qrModal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: #fff;
+          padding: 25px;
+          border-radius: 12px;
+          text-align: center;
+          width: 320px;
+          position: relative;
+        "
+      >
+        <button
+          onclick="closeQR()"
+          style="
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            border: none;
+            background: none;
+            font-size: 18px;
+            cursor: pointer;
+          "
+        >
+          ✖
+        </button>
+
+        <h3>Scan to Pay</h3>
+
+        <div id="qrCode" style="margin: 15px 0"></div>
+
+        <div style="margin: 10px 0; font-weight: bold">OR</div>
+
+        <button id="upiBtn" style="width: 100%">Open UPI App</button>
+      </div>
+    </div>
     <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDXdP6EmwBEyGt7K6s8p3_QrqmbGZEzWAs",
+        authDomain: "appointmentaayushcare.firebaseapp.com",
+        projectId: "appointmentaayushcare",
+        storageBucket: "appointmentaayushcare.firebasestorage.app",
+        messagingSenderId: "784933001457",
+        appId: "1:784933001457:web:929f2bff52e69ee7a43150",
+      };
 
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDXdP6EmwBEyGt7K6s8p3_QrqmbGZEzWAs",
-  authDomain: "appointmentaayushcare.firebaseapp.com",
-  projectId: "appointmentaayushcare",
-  storageBucket: "appointmentaayushcare.firebasestorage.app",
-  messagingSenderId: "784933001457",
-  appId: "1:784933001457:web:929f2bff52e69ee7a43150"
-};
+      async function saveAppointmentToFirebase(orderId) {
+        const data = {
+          orderId: orderId,
+          customerType: selectedCustomerType,
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+          name: document.getElementById("newName")?.value || "",
+          contact: document.getElementById("newContact")?.value || "",
+          state: document.getElementById("newState")?.value || "",
+          district: document.getElementById("newDistrict")?.value || "",
+          place: document.getElementById("newPlace")?.value || "",
+          language: document.getElementById("newLanguage")?.value || "",
+          referral: document.getElementById("newReferral")?.value || "",
+          doctor: document.getElementById("newDoctor")?.value || "",
 
-async function saveAppointmentToFirebase(orderId) {
+          patientId: document.getElementById("customerId")?.value || "",
 
-  const data = {
-    orderId: orderId,
-    customerType: selectedCustomerType,
+          mode:
+            document.querySelector('input[name="modeNew"]:checked')?.value ||
+            document.querySelector('input[name="modeOld"]:checked')?.value ||
+            "",
 
-    name: document.getElementById("newName")?.value || "",
-    contact: document.getElementById("newContact")?.value || "",
-    state: document.getElementById("newState")?.value || "",
-    district: document.getElementById("newDistrict")?.value || "",
-    place: document.getElementById("newPlace")?.value || "",
-    language: document.getElementById("newLanguage")?.value || "",
-    referral: document.getElementById("newReferral")?.value || "",
-    doctor: document.getElementById("newDoctor")?.value || "",
+          date: document.getElementById("appointmentDate")?.value || "",
 
-    patientId: document.getElementById("customerId")?.value || "",
+          slotStart: selectedSlot?.start || "",
+          slotEnd: selectedSlot?.end || "",
+          slotLabel: selectedSlot?.label || "",
 
-    mode: document.querySelector('input[name="modeNew"]:checked')?.value ||
-          document.querySelector('input[name="modeOld"]:checked')?.value || "",
+          amount: currentAmount,
+          status: "PENDING",
+          createdAt: new Date().toISOString(),
+        };
 
-    date: document.getElementById("appointmentDate")?.value || "",
-
-    slotStart: selectedSlot?.start || "",
-    slotEnd: selectedSlot?.end || "",
-    slotLabel: selectedSlot?.label || "",
-
-amount: currentAmount,
-status: "PENDING",
-createdAt: new Date().toISOString()
-  };
-
-  await db.ref("appointments/" + orderId).set(data);
-}
-
-
-    /* ---------- CONFIG ---------- */
-    const blockedDates = []; // add 'YYYY-MM-DD' if needed
-    let daysBuffer = 2;
-
-    const FEES = {
-    new: {
-      junior_consulting: 250,
-      consultant_alex: 500,
-      alex_only: 750
-    },
-    old: 250
-  };
-
-  /* ---------- HDFC UPI CONFIG ---------- */
-  const UPI_CONFIG = {
-    ver: "01",
-    mode: "15", // UAT only
-    vpa: "aayushcare@hdfcbank",
-    name: "AAYUSHCARE",
-    mcc: "6012", // UAT (LIVE will be 8062)
-    currency: "INR",
-    qrMedium: "06"
-  };
-
-  let currentAmount = 0; // holds payable amount
-
-
-    const timeRangesConfig = {
-      new: {
-        morning:   { startHour:9,  startMinute:0,  endHour:13, endMinute:0,  intervalMinutes:60, label:'Morning (9:00 AM – 1:00 PM)' },
-        afternoon: { startHour:14, startMinute:0,  endHour:17, endMinute:0,  intervalMinutes:60, label:'Afternoon (2:00 PM – 5:00 PM)' },
-        evening:   { startHour:18, startMinute:0,  endHour:21, endMinute:0,  intervalMinutes:60, label:'Evening (6:00 PM – 9:00 PM)' }
-      },
-      old: {
-        morning:   { startHour: 9,  startMinute: 0,  endHour: 12, endMinute: 30, intervalMinutes: 15, label:'Morning (9:00 AM – 12:30 PM)' },
-        afternoon: { startHour: 13, startMinute: 0,  endHour: 16, endMinute: 30, intervalMinutes: 15, label:'Afternoon (1:00 PM – 4:30 PM)' },
-        evening:   { startHour: 17, startMinute: 0,  endHour: 20, endMinute: 0,  intervalMinutes: 15, label:'Evening (5:00 PM – 8:00 PM)' }
-      }
-    };
-
-    /* ---------- DOM ---------- */
-    const paymentSection = document.getElementById('paymentSection');
-  const priceDisplay = document.getElementById('priceDisplay');
-  const payButton = document.getElementById('payButton');
-    const tabs = document.querySelectorAll('.tab');
-    const newCustomerSection = document.getElementById('newCustomerSection');
-    const oldCustomerSection = document.getElementById('oldCustomerSection');
-    const patientNameDisplay = document.getElementById('patientNameDisplay');
-    const newDoctorSelect = document.getElementById('newDoctor');
-    const appointmentDateInput = document.getElementById('appointmentDate');
-    const blockedDatesList = document.getElementById('blockedDatesList');
-    const dateHelp = document.getElementById('dateHelp');
-    const slotsContainer = document.getElementById('slotsContainer');
-    const slotSection = document.getElementById('slotSection');
-    const timeRangeSection = document.getElementById('timeRangeSection');
-    const timeRangeRadios = document.getElementById('timeRangeRadios');
-
-    let selectedCustomerType = 'new';
-    window.selectedCustomerType = selectedCustomerType;
-    let selectedSlot = null;
-
-    /* ---------- district data (kept short) ---------- */
-    const stateDistricts = {
-      kerala:["Thiruvananthapuram","Kollam","Pathanamthitta","Alappuzha","Kottayam","Idukki","Ernakulam","Thrissur","Palakkad","Malappuram","Kozhikode","Wayanad","Kannur","Kasaragod"],
-      tamilnadu:["Ariyalur","Chengalpattu","Chennai","Coimbatore","Cuddalore","Dharmapuri","Dindigul","Erode","Kallakurichi","Kancheepuram","Karur","Krishnagiri","Madurai","Mayiladuthurai","Nagapattinam","Namakkal","Nilgiris","Perambalur","Pudukkottai","Ramanathapuram","Ranipet","Salem","Sivaganga","Tenkasi","Thanjavur","Theni","Thoothukudi","Tiruchirappalli","Tirunelveli","Tirupathur","Tiruppur","Tiruvallur","Tiruvannamalai","Tiruvarur","Vellore","Viluppuram","Virudhunagar"],
-      karnataka:["Bagalkot","Ballari","Belagavi","Bengaluru Rural","Bengaluru Urban","Bidar","Chamarajanagar","Chikballapur","Chikkamagaluru","Chitradurga","Dakshina Kannada","Davanagere","Dharwad","Gadag","Hassan","Haveri","Kalaburagi","Kodagu","Kolar","Koppal","Mandya","Mysuru","Raichur","Ramanagara","Shivamogga","Tumakuru","Udupi","Uttara Kannada","Vijayapura","Yadgir"]
-    };
-    const stateSelect = document.getElementById('newState');
-    const districtSelect = document.getElementById('newDistrict');
-    if(stateSelect){
-      stateSelect.addEventListener('change', ()=>{
-        const st = stateSelect.value;
-        districtSelect.innerHTML = '<option value="">-- Select District --</option>';
-        districtSelect.disabled = true;
-        if(!st) return;
-        (stateDistricts[st]||[]).forEach(d=>{
-          const o=document.createElement('option'); o.value=d.toLowerCase().replace(/\s+/g,'_'); o.textContent=d; districtSelect.appendChild(o);
-        });
-        districtSelect.disabled=false;
-      });
-    }
-
-    /* ---------- helpers ---------- */
-    function pad(n){return String(n).padStart(2,'0')}
-    function formatDateYMD(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
-    function setMinAppointmentDate(days){
-      const now=new Date(); const min=new Date(now.getFullYear(),now.getMonth(),now.getDate()); min.setDate(min.getDate()+days);
-      appointmentDateInput.min = formatDateYMD(min);
-      dateHelp.textContent = `Appointments must be booked at least ${days} days in advance. Earliest available: ${pad(min.getDate())}/${pad(min.getMonth()+1)}/${min.getFullYear()}`;
-    }
-    function parseYMD(ymd){const p=String(ymd).split('-').map(Number); if(p.length!==3) return null; return new Date(p[0],p[1]-1,p[2])}
-    function isDateAtLeastBuffer(sel,days){ if(!sel) return false; const s=parseYMD(sel); if(!s) return false; const now=new Date(); const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()); const min=new Date(today); min.setDate(min.getDate()+days); return s>=min}
-    function isBlocked(d){return blockedDates.includes(d)}
-
-    function generateSlotsFromConfig(cfg, chosenDateStr, startOnly = false){
-      const slots = [];
-      if(!cfg || !chosenDateStr) return slots;
-      const parts = chosenDateStr.split('-').map(Number);
-      const year = parts[0], month = parts[1]-1, day = parts[2];
-      const cur = new Date(year, month, day, cfg.startHour, cfg.startMinute, 0, 0);
-      const end = new Date(year, month, day, cfg.endHour, cfg.endMinute, 0, 0);
-      while(cur < end){
-        const slotStart = new Date(cur.getTime());
-        const slotEnd = new Date(cur.getTime() + cfg.intervalMinutes*60000);
-        if(slotEnd > end) break;
-        const fmt = d=>{ const h=d.getHours(), m=pad(d.getMinutes()), ampm = h>=12 ? 'PM':'AM', h12=h%12||12; return `${h12}:${m} ${ampm}`; };
-        const startLabel = fmt(slotStart);
-        const endLabel = fmt(slotEnd);
-        slots.push({
-          start: startLabel,
-          end: endLabel,
-          label: startOnly ? startLabel : `${startLabel}–${endLabel}`
-        });
-        cur.setMinutes(cur.getMinutes()+cfg.intervalMinutes);
-      }
-      return slots;
-    }
-
-
-    function renderThreeFixedSlots(chosenDate){
-      const fixed = [
-        { id:'slot1', label:'9:30 AM–10:30 AM', start:'9:30 AM', end:'10:30 AM' },
-        { id:'slot2', label:'3:00 PM–4:00 PM', start:'3:00 PM', end:'4:00 PM' },
-        { id:'slot3', label:'5:30 PM–6:30 PM', start:'5:30 PM', end:'6:30 PM' }
-      ];
-      slotsContainer.innerHTML=''; slotSection.classList.remove('hidden'); selectedSlot=null;
-      fixed.forEach(item=>{
-        const div=document.createElement('div'); div.className='slot large-slot'; div.textContent=item.label;
-        div.addEventListener('click',()=>{ document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected')); div.classList.add('selected'); selectedSlot=item;
-  updatePrice(); });
-        slotsContainer.appendChild(div);
-      });
-    }
-
-    /* ---------- render radios ---------- */
-    function buildRadios(){
-      timeRangeRadios.innerHTML='';
-      const cfgGroup = (selectedCustomerType==='old') ? timeRangesConfig.old : timeRangesConfig.new;
-      Object.keys(cfgGroup).forEach(key=>{
-        const cfg=cfgGroup[key];
-        const labelText=cfg.label;
-        const wrapper=document.createElement('label');
-        const radio=document.createElement('input');
-        radio.type='radio'; radio.name='timeRange'; radio.value=key; radio.style.marginRight='8px';
-        wrapper.appendChild(radio); wrapper.appendChild(document.createTextNode(' '+labelText));
-        timeRangeRadios.appendChild(wrapper);
-      });
-    }
-
-    /* ---------- handlers ---------- */
-    tabs.forEach(tab=>{
-      tab.addEventListener('click', ()=>{
-        tabs.forEach(t=>t.classList.remove('active')); tab.classList.add('active');
-        selectedCustomerType = tab.dataset.type; window.selectedCustomerType = selectedCustomerType;
-        if(selectedCustomerType==='old'){ newCustomerSection.classList.add('hidden'); oldCustomerSection.classList.remove('hidden'); patientNameDisplay.classList.remove('hidden'); }
-        else { newCustomerSection.classList.remove('hidden'); oldCustomerSection.classList.add('hidden'); patientNameDisplay.classList.add('hidden'); patientNameDisplay.textContent=''; }
-        slotSection.classList.add('hidden'); slotsContainer.innerHTML=''; timeRangeSection.classList.add('hidden');    paymentSection.classList.add('hidden');
-      priceDisplay.textContent = '₹0';
-      selectedSlot = null;
-      });
-    });
-
-    timeRangeRadios.addEventListener('change', (e)=>{
-      if(!e.target || e.target.tagName!=='INPUT') return;
-      onTimeRangeChosen(selectedCustomerType, e.target.value);
-    });
-
-    function onTimeRangeChosen(customerType, rangeKey){
-      // consultant special case
-      if(customerType==='new' && newDoctorSelect && newDoctorSelect.value==='consultant_alex'){
-        timeRangeSection.classList.add('hidden');
-        renderThreeFixedSlots(appointmentDateInput.value);
-        return;
+        await db.ref("appointments/" + orderId).set(data);
       }
 
-      const chosenDate = appointmentDateInput.value;
-      if(!isDateAtLeastBuffer(chosenDate, daysBuffer) || isBlocked(chosenDate)){
-        alert('Selected date invalid/unavailable. Choose another.');
-        // clear radios
-        document.getElementsByName('timeRange').forEach(r=>r.checked=false);
-        slotSection.classList.add('hidden'); return;
-      }
-
-      const cfg = timeRangesConfig[customerType][rangeKey];
-      if(!cfg) return;
-      const slots = generateSlotsFromConfig(cfg, chosenDate, customerType === 'old');
-      slotsContainer.innerHTML=''; slotSection.classList.remove('hidden'); selectedSlot=null;
-      if(slots.length===0){ const info=document.createElement('div'); info.textContent='No slots'; info.style.color='#a33'; slotsContainer.appendChild(info); return; }
-  slots.forEach(s=>{
-    const div=document.createElement('div'); 
-    div.className='slot'; 
-    div.textContent=s.label;
-
-    div.addEventListener('click', ()=>{ 
-      document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected')); 
-      div.classList.add('selected'); 
-      selectedSlot = s;
-      updatePrice(); // ✅ CORRECT PLACE
-    }); 
-
-    slotsContainer.appendChild(div);
-  });
-
-    }
-
-    /* when date chosen */
-    function onDatePicked(){
-        paymentSection.classList.add('hidden');
-    priceDisplay.textContent = '₹0';
-    selectedSlot = null;
-      const chosen = appointmentDateInput.value;
-      slotSection.classList.add('hidden'); slotsContainer.innerHTML=''; selectedSlot=null;
-      document.getElementsByName('timeRange').forEach(r=>r.checked=false);
-      if(!chosen) return;
-      if(!isDateAtLeastBuffer(chosen, daysBuffer)){ alert(`Choose a date at least ${daysBuffer} days from today.`); appointmentDateInput.value=''; return; }
-      if(isBlocked(chosen)){ alert('Selected date is unavailable.'); appointmentDateInput.value=''; return; }
-
-      if(window.selectedCustomerType==='old'){
-        timeRangeSection.classList.remove('hidden'); buildRadios();
-        return;
-      }
-
-      const doctorVal = newDoctorSelect ? newDoctorSelect.value : '';
-      if(doctorVal==='consultant_alex'){ timeRangeSection.classList.add('hidden'); renderThreeFixedSlots(chosen); return; }
-
-      timeRangeSection.classList.remove('hidden'); buildRadios();
-    }
-
-  function updatePrice() {
-    let price = 0;
-
-    if (selectedCustomerType === 'new') {
-      const doctor = newDoctorSelect.value;
-      price = FEES.new[doctor] || 0;
-    } else {
-      price = FEES.old;
-    }
-
-    if (price > 0) {
-      currentAmount = price; // ✅ ADD THIS LINE
-      priceDisplay.textContent = `₹${price}`;
-      paymentSection.classList.remove('hidden');
-    } else {
-      currentAmount = 0; // optional safety
-      paymentSection.classList.add('hidden');
-    }
-  }
-
-  /* ---------- HDFC UPI HELPERS ---------- */
-let currentTxnId = null;
-
-function generateTxnId() {
-  currentTxnId = "ORD" + Date.now();   // ✅ CHANGE APT → ORD
-  return currentTxnId;
-}
-
-  function buildUPILink(amount) {
-    const params = new URLSearchParams({
-      ver: UPI_CONFIG.ver,
-      mode: UPI_CONFIG.mode,
-      tr: generateTxnId(),
-      tn: "Appointment Booking",
-      pn: UPI_CONFIG.name,
-      pa: UPI_CONFIG.vpa,
-      mc: UPI_CONFIG.mcc,
-      am: amount.toFixed(2),
-      cu: UPI_CONFIG.currency,
-      qrMedium: UPI_CONFIG.qrMedium
-    });
-
-    return `upi://pay?${params.toString().replace("%40", "@")}`;
-  }
-
-
-
-    /* newDoctor change */
-    if(newDoctorSelect){
-      newDoctorSelect.addEventListener('change', ()=>{
-        if(appointmentDateInput.value) onDatePicked();
-      });
-    }
-
-    /* patientId fetch (unchanged) */
-    const customerIdInput = document.getElementById("customerId");
-    let debounceTimer;
-    customerIdInput?.addEventListener('input', ()=>{
-      clearTimeout(debounceTimer);
-      const id = customerIdInput.value.trim();
-      if(!id){ patientNameDisplay.textContent=''; return; }
-      debounceTimer=setTimeout(async ()=>{
-        if(selectedCustomerType==='old'){
-          patientNameDisplay.textContent='Checking...';
-          try{
-            const res = await fetch(`https://software.aayushcare.com/api/resource/Patient/${id}`,{method:'GET',headers:{"Authorization":"token 7897c339c442e4b:01ff7013b92aa32"}});
-            if(!res.ok) throw new Error('not found');
-            const result = await res.json(); const data = result?.data; const name = data?.patient_name; const addr = data?.custom_address_line_2;
-            if(name){ patientNameDisplay.innerHTML = `Patient Name: ${name}` + (addr? `<br>Place: ${addr}`:''); patientNameDisplay.classList.remove('hidden'); }
-            else { patientNameDisplay.textContent='Patient name not found.'; }
-          }catch(e){ patientNameDisplay.textContent='Patient not found or error.'; }
-        }
-      },500);
-    });
-    
-payButton.addEventListener('click', async () => {
-
-  if (!selectedSlot) {
-    alert("Please select a time slot first.");
-    return;
-  }
-
-  if (!currentAmount || currentAmount <= 0) {
-    alert("Invalid payment amount.");
-    return;
-  }
-
-const upiUrl = buildUPILink(currentAmount);
-
-// SAFE: do NOT generate again if already created
-if (!currentTxnId) {
-  console.error("Txn ID missing!");
-  return;
-}
-
-await saveAppointmentToFirebase(currentTxnId);
-
-  console.log("====== UPI LINK ======");
-  console.log(upiUrl);
-  console.log("Txn ID:", currentTxnId);
-
-  await updatePlainText(currentTxnId);
-
-  // ✅ SHOW QR POPUP INSTEAD OF DIRECT REDIRECT
-  showQR(upiUrl);
-
-  startPaymentCheck(currentTxnId);
-});
-
-async function updatePlainText(orderId) {
-
-  const merchantId = "HDFC000010874024";
-
-  // ✅ CORRECT FORMAT (VERY IMPORTANT)
-  const plainText = `${merchantId}|${orderId}|||||||||||NA|NA`;
-
-  try {
-
-    // 🔍 STEP 1 — FIND RECORD
-    const filters = JSON.stringify([
-      ["decrypted_meres", "like", "%" + orderId + "%"]
-    ]);
-
-    const fields = JSON.stringify(["name", "decrypted_meres"]);
-
-    const url = `https://software.aayushcare.com/api/resource/Online%20Payment%20Log?filters=${filters}&fields=${fields}`;
-
-    const res = await fetch(url, {
-      headers: {
-        "Authorization": "token 7897c339c442e4b:01ff7013b92aa32"
-      }
-    });
-
-    const data = await res.json();
-
-    if (!data.data || data.data.length === 0) {
-      console.log("No record found for update");
-      return;
-    }
-
-    // ✅ SAFE MATCH
-    const record = data.data.find(r => {
-      if (!r.decrypted_meres) return false;
-      const parts = r.decrypted_meres.split("|");
-      return parts[1] === orderId;
-    });
-
-    if (!record) {
-      console.log("Exact match not found");
-      return;
-    }
-
-    const name = record.name;
-
-    // ✏️ STEP 2 — UPDATE plain_text
-    await fetch(`https://software.aayushcare.com/api/resource/Online%20Payment%20Log/${name}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "token 7897c339c442e4b:01ff7013b92aa32"
-      },
-      body: JSON.stringify({
-        plain_text: plainText
-      })
-    });
-
-    console.log("Plain text updated for:", orderId);
-
-  } catch (err) {
-    console.error("Update error:", err);
-  }
-}
-
-function showQR(upiUrl) {
-  document.getElementById("qrModal").style.display = "flex";
-
-  const qrContainer = document.getElementById("qrCode");
-  qrContainer.innerHTML = "";
-
-  new QRCode(qrContainer, {
-    text: upiUrl,
-    width: 220,
-    height: 220
-  });
-
-  document.getElementById("upiBtn").onclick = () => {
-    window.location.href = upiUrl;
-  };
-}
-
-function closeQR() {
-  document.getElementById("qrModal").style.display = "none";
-}
-
-async function startPaymentCheck(orderId) {
-  let attempts = 0;
-
-  const interval = setInterval(async () => {
-    attempts++;
-
-    try {
-
-      const filters = JSON.stringify([
-  ["decrypted_meres", "like", "%" + orderId + "%"]
-]);
-
-const fields = JSON.stringify([
-  "name",
-  "decrypted_meres"
-]);
-      const url = `https://software.aayushcare.com/api/resource/Online%20Payment%20Log?filters=${filters}&fields=${fields}`;
-
-      const res = await fetch(url, {
-        headers: {
-          "Authorization": "token 7897c339c442e4b:01ff7013b92aa32"
-        }
-      });
-
-      const data = await res.json();
-
-      if (data.data && data.data.length > 0) {
-        const record = data.data.find(r => {
-  const parsed = parseMeres(r.decrypted_meres);
-  return parsed && parsed.orderId === orderId;
-});
-
-        console.log("Matched Payment:", record);
-
-const meresData = parseMeres(record.decrypted_meres);
-
-console.log("MERES DATA:", meresData);
-
-if (
-  meresData &&
-  meresData.status === "SUCCESS" &&
-  meresData.orderId === orderId
-) {
-
-  const snapshot = await db.ref("appointments/" + orderId).once("value");
-  const firebaseData = snapshot.val();
-
-  if (!firebaseData) {
-    clearInterval(interval);
-    alert("Order not found");
-    return;
-  }
-
-  if (firebaseData.status === "PAID") {
-    clearInterval(interval);
-    alert("Order already used");
-    return;
-  }
-
-  const expectedAmount = parseFloat(firebaseData.amount);
-  const paidAmount = parseFloat(meresData.amount);
-
-  if (expectedAmount === paidAmount) {
-
-    await db.ref("appointments/" + orderId).update({
-      status: "PAID"
-    });
-
-    clearInterval(interval);
-    window.location.href = "PaymentSuccess.html";
-
-  } else {
-    clearInterval(interval);
-    alert("Amount mismatch - Tampering detected");
-  }
-}
-
-else if (meresData && meresData.status === "FAILED") {
-  clearInterval(interval);
-  alert("Payment Failed ❌");
-}
-
-else {
-  console.log("Still processing...");
-}
-      }
-
-      if (attempts > 24) {
-        clearInterval(interval);
-        alert("Payment not confirmed. Please check.");
-      }
-
-    } catch (err) {
-      console.error("ERROR:", err);
-    }
-
-  }, 5000);
-}
-
-function parseMeres(meres) {
-  if (!meres) return null;
-
-  const parts = meres.split("|");
-
-  return {
-    orderId: parts[1],
-    amount: parseFloat(parts[2]),
-    status: parts[4]
-  };
-}
-
-    /* init */
-    document.addEventListener('DOMContentLoaded', ()=>{
-      setMinAppointmentDate(daysBuffer);
-      // show blocked list if any
-      if(blockedDates.length){ blockedDatesList.style.display='block'; blockedDatesList.textContent = 'Unavailable dates: '+blockedDates.join(', '); }
-      else { blockedDatesList.style.display='none'; }
-      // build default radios when date chosen later
-      appointmentDateInput.addEventListener('change', onDatePicked);
-      // ensure global selectedCustomerType set
+      /* ---------- CONFIG ---------- */
+      const blockedDates = []; // add 'YYYY-MM-DD' if needed
+      let daysBuffer = 2;
+
+      const FEES = {
+        new: {
+          junior_consulting: 250,
+          consultant_alex: 500,
+          alex_only: 750,
+        },
+        old: 250,
+      };
+
+      /* ---------- HDFC UPI CONFIG ---------- */
+      const UPI_CONFIG = {
+        ver: "01",
+        mode: "15", // UAT only
+        vpa: "aayushcare@hdfcbank",
+        name: "AAYUSHCARE",
+        mcc: "6012", // UAT (LIVE will be 8062)
+        currency: "INR",
+        qrMedium: "06",
+      };
+
+      let currentAmount = 0; // holds payable amount
+
+      const timeRangesConfig = {
+        new: {
+          morning: {
+            startHour: 9,
+            startMinute: 0,
+            endHour: 13,
+            endMinute: 0,
+            intervalMinutes: 60,
+            label: "Morning (9:00 AM – 1:00 PM)",
+          },
+          afternoon: {
+            startHour: 14,
+            startMinute: 0,
+            endHour: 17,
+            endMinute: 0,
+            intervalMinutes: 60,
+            label: "Afternoon (2:00 PM – 5:00 PM)",
+          },
+          evening: {
+            startHour: 18,
+            startMinute: 0,
+            endHour: 21,
+            endMinute: 0,
+            intervalMinutes: 60,
+            label: "Evening (6:00 PM – 9:00 PM)",
+          },
+        },
+        old: {
+          morning: {
+            startHour: 9,
+            startMinute: 0,
+            endHour: 12,
+            endMinute: 30,
+            intervalMinutes: 15,
+            label: "Morning (9:00 AM – 12:30 PM)",
+          },
+          afternoon: {
+            startHour: 13,
+            startMinute: 0,
+            endHour: 16,
+            endMinute: 30,
+            intervalMinutes: 15,
+            label: "Afternoon (1:00 PM – 4:30 PM)",
+          },
+          evening: {
+            startHour: 17,
+            startMinute: 0,
+            endHour: 20,
+            endMinute: 0,
+            intervalMinutes: 15,
+            label: "Evening (5:00 PM – 8:00 PM)",
+          },
+        },
+      };
+
+      /* ---------- DOM ---------- */
+      const paymentSection = document.getElementById("paymentSection");
+      const priceDisplay = document.getElementById("priceDisplay");
+      const payButton = document.getElementById("payButton");
+      const tabs = document.querySelectorAll(".tab");
+      const newCustomerSection = document.getElementById("newCustomerSection");
+      const oldCustomerSection = document.getElementById("oldCustomerSection");
+      const patientNameDisplay = document.getElementById("patientNameDisplay");
+      const newDoctorSelect = document.getElementById("newDoctor");
+      const appointmentDateInput = document.getElementById("appointmentDate");
+      const blockedDatesList = document.getElementById("blockedDatesList");
+      const dateHelp = document.getElementById("dateHelp");
+      const slotsContainer = document.getElementById("slotsContainer");
+      const slotSection = document.getElementById("slotSection");
+      const timeRangeSection = document.getElementById("timeRangeSection");
+      const timeRangeRadios = document.getElementById("timeRangeRadios");
+
+      let selectedCustomerType = "new";
       window.selectedCustomerType = selectedCustomerType;
-    });
+      let selectedSlot = null;
+
+      /* ---------- district data (kept short) ---------- */
+      const stateDistricts = {
+        kerala: [
+          "Thiruvananthapuram",
+          "Kollam",
+          "Pathanamthitta",
+          "Alappuzha",
+          "Kottayam",
+          "Idukki",
+          "Ernakulam",
+          "Thrissur",
+          "Palakkad",
+          "Malappuram",
+          "Kozhikode",
+          "Wayanad",
+          "Kannur",
+          "Kasaragod",
+        ],
+        tamilnadu: [
+          "Ariyalur",
+          "Chengalpattu",
+          "Chennai",
+          "Coimbatore",
+          "Cuddalore",
+          "Dharmapuri",
+          "Dindigul",
+          "Erode",
+          "Kallakurichi",
+          "Kancheepuram",
+          "Karur",
+          "Krishnagiri",
+          "Madurai",
+          "Mayiladuthurai",
+          "Nagapattinam",
+          "Namakkal",
+          "Nilgiris",
+          "Perambalur",
+          "Pudukkottai",
+          "Ramanathapuram",
+          "Ranipet",
+          "Salem",
+          "Sivaganga",
+          "Tenkasi",
+          "Thanjavur",
+          "Theni",
+          "Thoothukudi",
+          "Tiruchirappalli",
+          "Tirunelveli",
+          "Tirupathur",
+          "Tiruppur",
+          "Tiruvallur",
+          "Tiruvannamalai",
+          "Tiruvarur",
+          "Vellore",
+          "Viluppuram",
+          "Virudhunagar",
+        ],
+        karnataka: [
+          "Bagalkot",
+          "Ballari",
+          "Belagavi",
+          "Bengaluru Rural",
+          "Bengaluru Urban",
+          "Bidar",
+          "Chamarajanagar",
+          "Chikballapur",
+          "Chikkamagaluru",
+          "Chitradurga",
+          "Dakshina Kannada",
+          "Davanagere",
+          "Dharwad",
+          "Gadag",
+          "Hassan",
+          "Haveri",
+          "Kalaburagi",
+          "Kodagu",
+          "Kolar",
+          "Koppal",
+          "Mandya",
+          "Mysuru",
+          "Raichur",
+          "Ramanagara",
+          "Shivamogga",
+          "Tumakuru",
+          "Udupi",
+          "Uttara Kannada",
+          "Vijayapura",
+          "Yadgir",
+        ],
+      };
+      const stateSelect = document.getElementById("newState");
+      const districtSelect = document.getElementById("newDistrict");
+      if (stateSelect) {
+        stateSelect.addEventListener("change", () => {
+          const st = stateSelect.value;
+          districtSelect.innerHTML =
+            '<option value="">-- Select District --</option>';
+          districtSelect.disabled = true;
+          if (!st) return;
+          (stateDistricts[st] || []).forEach((d) => {
+            const o = document.createElement("option");
+            o.value = d.toLowerCase().replace(/\s+/g, "_");
+            o.textContent = d;
+            districtSelect.appendChild(o);
+          });
+          districtSelect.disabled = false;
+        });
+      }
+
+      /* ---------- helpers ---------- */
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+      function formatDateYMD(d) {
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      }
+      function setMinAppointmentDate(days) {
+        const now = new Date();
+        const min = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        min.setDate(min.getDate() + days);
+        appointmentDateInput.min = formatDateYMD(min);
+        dateHelp.textContent = `Appointments must be booked at least ${days} days in advance. Earliest available: ${pad(min.getDate())}/${pad(min.getMonth() + 1)}/${min.getFullYear()}`;
+      }
+      function parseYMD(ymd) {
+        const p = String(ymd).split("-").map(Number);
+        if (p.length !== 3) return null;
+        return new Date(p[0], p[1] - 1, p[2]);
+      }
+      function isDateAtLeastBuffer(sel, days) {
+        if (!sel) return false;
+        const s = parseYMD(sel);
+        if (!s) return false;
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+        const min = new Date(today);
+        min.setDate(min.getDate() + days);
+        return s >= min;
+      }
+      function isBlocked(d) {
+        return blockedDates.includes(d);
+      }
+
+      function generateSlotsFromConfig(cfg, chosenDateStr, startOnly = false) {
+        const slots = [];
+        if (!cfg || !chosenDateStr) return slots;
+        const parts = chosenDateStr.split("-").map(Number);
+        const year = parts[0],
+          month = parts[1] - 1,
+          day = parts[2];
+        const cur = new Date(
+          year,
+          month,
+          day,
+          cfg.startHour,
+          cfg.startMinute,
+          0,
+          0,
+        );
+        const end = new Date(
+          year,
+          month,
+          day,
+          cfg.endHour,
+          cfg.endMinute,
+          0,
+          0,
+        );
+        while (cur < end) {
+          const slotStart = new Date(cur.getTime());
+          const slotEnd = new Date(cur.getTime() + cfg.intervalMinutes * 60000);
+          if (slotEnd > end) break;
+          const fmt = (d) => {
+            const h = d.getHours(),
+              m = pad(d.getMinutes()),
+              ampm = h >= 12 ? "PM" : "AM",
+              h12 = h % 12 || 12;
+            return `${h12}:${m} ${ampm}`;
+          };
+          const startLabel = fmt(slotStart);
+          const endLabel = fmt(slotEnd);
+          slots.push({
+            start: startLabel,
+            end: endLabel,
+            label: startOnly ? startLabel : `${startLabel}–${endLabel}`,
+          });
+          cur.setMinutes(cur.getMinutes() + cfg.intervalMinutes);
+        }
+        return slots;
+      }
+
+      function renderThreeFixedSlots(chosenDate) {
+        const fixed = [
+          {
+            id: "slot1",
+            label: "9:30 AM–10:30 AM",
+            start: "9:30 AM",
+            end: "10:30 AM",
+          },
+          {
+            id: "slot2",
+            label: "3:00 PM–4:00 PM",
+            start: "3:00 PM",
+            end: "4:00 PM",
+          },
+          {
+            id: "slot3",
+            label: "5:30 PM–6:30 PM",
+            start: "5:30 PM",
+            end: "6:30 PM",
+          },
+        ];
+        slotsContainer.innerHTML = "";
+        slotSection.classList.remove("hidden");
+        selectedSlot = null;
+        fixed.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "slot large-slot";
+          div.textContent = item.label;
+          div.addEventListener("click", () => {
+            document
+              .querySelectorAll(".slot")
+              .forEach((s) => s.classList.remove("selected"));
+            div.classList.add("selected");
+            selectedSlot = item;
+            updatePrice();
+          });
+          slotsContainer.appendChild(div);
+        });
+      }
+
+      /* ---------- render radios ---------- */
+      function buildRadios() {
+        timeRangeRadios.innerHTML = "";
+        const cfgGroup =
+          selectedCustomerType === "old"
+            ? timeRangesConfig.old
+            : timeRangesConfig.new;
+        Object.keys(cfgGroup).forEach((key) => {
+          const cfg = cfgGroup[key];
+          const labelText = cfg.label;
+          const wrapper = document.createElement("label");
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "timeRange";
+          radio.value = key;
+          radio.style.marginRight = "8px";
+          wrapper.appendChild(radio);
+          wrapper.appendChild(document.createTextNode(" " + labelText));
+          timeRangeRadios.appendChild(wrapper);
+        });
+      }
+
+      /* ---------- handlers ---------- */
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          selectedCustomerType = tab.dataset.type;
+          window.selectedCustomerType = selectedCustomerType;
+          if (selectedCustomerType === "old") {
+            newCustomerSection.classList.add("hidden");
+            oldCustomerSection.classList.remove("hidden");
+            patientNameDisplay.classList.remove("hidden");
+          } else {
+            newCustomerSection.classList.remove("hidden");
+            oldCustomerSection.classList.add("hidden");
+            patientNameDisplay.classList.add("hidden");
+            patientNameDisplay.textContent = "";
+          }
+          slotSection.classList.add("hidden");
+          slotsContainer.innerHTML = "";
+          timeRangeSection.classList.add("hidden");
+          paymentSection.classList.add("hidden");
+          priceDisplay.textContent = "₹0";
+          selectedSlot = null;
+        });
+      });
+
+      timeRangeRadios.addEventListener("change", (e) => {
+        if (!e.target || e.target.tagName !== "INPUT") return;
+        onTimeRangeChosen(selectedCustomerType, e.target.value);
+      });
+
+      function onTimeRangeChosen(customerType, rangeKey) {
+        // consultant special case
+        if (
+          customerType === "new" &&
+          newDoctorSelect &&
+          newDoctorSelect.value === "consultant_alex"
+        ) {
+          timeRangeSection.classList.add("hidden");
+          renderThreeFixedSlots(appointmentDateInput.value);
+          return;
+        }
+
+        const chosenDate = appointmentDateInput.value;
+        if (
+          !isDateAtLeastBuffer(chosenDate, daysBuffer) ||
+          isBlocked(chosenDate)
+        ) {
+          alert("Selected date invalid/unavailable. Choose another.");
+          // clear radios
+          document
+            .getElementsByName("timeRange")
+            .forEach((r) => (r.checked = false));
+          slotSection.classList.add("hidden");
+          return;
+        }
+
+        const cfg = timeRangesConfig[customerType][rangeKey];
+        if (!cfg) return;
+        const slots = generateSlotsFromConfig(
+          cfg,
+          chosenDate,
+          customerType === "old",
+        );
+        slotsContainer.innerHTML = "";
+        slotSection.classList.remove("hidden");
+        selectedSlot = null;
+        if (slots.length === 0) {
+          const info = document.createElement("div");
+          info.textContent = "No slots";
+          info.style.color = "#a33";
+          slotsContainer.appendChild(info);
+          return;
+        }
+        slots.forEach((s) => {
+          const div = document.createElement("div");
+          div.className = "slot";
+          div.textContent = s.label;
+
+          div.addEventListener("click", () => {
+            document
+              .querySelectorAll(".slot")
+              .forEach((x) => x.classList.remove("selected"));
+            div.classList.add("selected");
+            selectedSlot = s;
+            updatePrice(); // ✅ CORRECT PLACE
+          });
+
+          slotsContainer.appendChild(div);
+        });
+      }
+
+      /* when date chosen */
+      function onDatePicked() {
+        paymentSection.classList.add("hidden");
+        priceDisplay.textContent = "₹0";
+        selectedSlot = null;
+        const chosen = appointmentDateInput.value;
+        slotSection.classList.add("hidden");
+        slotsContainer.innerHTML = "";
+        selectedSlot = null;
+        document
+          .getElementsByName("timeRange")
+          .forEach((r) => (r.checked = false));
+        if (!chosen) return;
+        if (!isDateAtLeastBuffer(chosen, daysBuffer)) {
+          alert(`Choose a date at least ${daysBuffer} days from today.`);
+          appointmentDateInput.value = "";
+          return;
+        }
+        if (isBlocked(chosen)) {
+          alert("Selected date is unavailable.");
+          appointmentDateInput.value = "";
+          return;
+        }
+
+        if (window.selectedCustomerType === "old") {
+          timeRangeSection.classList.remove("hidden");
+          buildRadios();
+          return;
+        }
+
+        const doctorVal = newDoctorSelect ? newDoctorSelect.value : "";
+        if (doctorVal === "consultant_alex") {
+          timeRangeSection.classList.add("hidden");
+          renderThreeFixedSlots(chosen);
+          return;
+        }
+
+        timeRangeSection.classList.remove("hidden");
+        buildRadios();
+      }
+
+      function updatePrice() {
+        let price = 0;
+
+        if (selectedCustomerType === "new") {
+          const doctor = newDoctorSelect.value;
+          price = FEES.new[doctor] || 0;
+        } else {
+          price = FEES.old;
+        }
+
+        if (price > 0) {
+          currentAmount = price; // ✅ ADD THIS LINE
+          priceDisplay.textContent = `₹${price}`;
+          paymentSection.classList.remove("hidden");
+        } else {
+          currentAmount = 0; // optional safety
+          paymentSection.classList.add("hidden");
+        }
+      }
+
+      /* ---------- HDFC UPI HELPERS ---------- */
+      let currentTxnId = null;
+
+      function generateTxnId() {
+        currentTxnId = "ORD" + Date.now(); // ✅ CHANGE APT → ORD
+        return currentTxnId;
+      }
+
+      function buildUPILink(amount) {
+        const params = new URLSearchParams({
+          ver: UPI_CONFIG.ver,
+          mode: UPI_CONFIG.mode,
+          tr: generateTxnId(),
+          tn: "Appointment Booking",
+          pn: UPI_CONFIG.name,
+          pa: UPI_CONFIG.vpa,
+          mc: UPI_CONFIG.mcc,
+          am: amount.toFixed(2),
+          cu: UPI_CONFIG.currency,
+          qrMedium: UPI_CONFIG.qrMedium,
+        });
+
+        return `upi://pay?${params.toString().replace("%40", "@")}`;
+      }
+
+      /* newDoctor change */
+      if (newDoctorSelect) {
+        newDoctorSelect.addEventListener("change", () => {
+          if (appointmentDateInput.value) onDatePicked();
+        });
+      }
+
+      /* patientId fetch (unchanged) */
+      const customerIdInput = document.getElementById("customerId");
+      let debounceTimer;
+      customerIdInput?.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        const id = customerIdInput.value.trim();
+        if (!id) {
+          patientNameDisplay.textContent = "";
+          return;
+        }
+        debounceTimer = setTimeout(async () => {
+          if (selectedCustomerType === "old") {
+            patientNameDisplay.textContent = "Checking...";
+            try {
+              const res = await fetch(
+                `https://software.aayushcare.com/api/resource/Patient/${id}`,
+                {
+                  method: "GET",
+                  headers: {
+                    Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
+                  },
+                },
+              );
+              if (!res.ok) throw new Error("not found");
+              const result = await res.json();
+              const data = result?.data;
+              const name = data?.patient_name;
+              const addr = data?.custom_address_line_2;
+              if (name) {
+                patientNameDisplay.innerHTML =
+                  `Patient Name: ${name}` + (addr ? `<br>Place: ${addr}` : "");
+                patientNameDisplay.classList.remove("hidden");
+              } else {
+                patientNameDisplay.textContent = "Patient name not found.";
+              }
+            } catch (e) {
+              patientNameDisplay.textContent = "Patient not found or error.";
+            }
+          }
+        }, 500);
+      });
+
+      payButton.addEventListener("click", async () => {
+        if (!selectedSlot) {
+          alert("Please select a time slot first.");
+          return;
+        }
+
+        if (!currentAmount || currentAmount <= 0) {
+          alert("Invalid payment amount.");
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            "https://hdfc-payment-gateway.netlify.app/.netlify/functions/create-order",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                amount: "129.15",
+                customer_id: "",
+                currency: "INR",
+                phone: "9878766867",
+                email: "hello1@gmail.com",
+                return_url:
+                  "https://www.migrainedoctoronline.com/PaymentSuccess.html",
+              }),
+            },
+          );
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            alert("Something went wrong. Please try again.");
+            return;
+          }
+
+          //Redirecting user to HDFC payment page
+          window.location.href = data.payment_links.web;
+        } catch (err) {
+          alert("Network error. Please try again.");
+        }
+
+        /* const upiUrl = buildUPILink(currentAmount);
+
+          // SAFE: do NOT generate again if already created
+          if (!currentTxnId) {
+            console.error("Txn ID missing!");
+            return;
+          }
+
+          await saveAppointmentToFirebase(currentTxnId);
+
+          await updatePlainText(currentTxnId);
+
+          showQR(upiUrl);
+
+          startPaymentCheck(currentTxnId); */
+      });
+
+      async function updatePlainText(orderId) {
+        const merchantId = "HDFC000010874024";
+
+        // ✅ CORRECT FORMAT (VERY IMPORTANT)
+        const plainText = `${merchantId}|${orderId}|||||||||||NA|NA`;
+
+        try {
+          // 🔍 STEP 1 — FIND RECORD
+          const filters = JSON.stringify([
+            ["decrypted_meres", "like", "%" + orderId + "%"],
+          ]);
+
+          const fields = JSON.stringify(["name", "decrypted_meres"]);
+
+          const url = `https://software.aayushcare.com/api/resource/Online%20Payment%20Log?filters=${filters}&fields=${fields}`;
+
+          const res = await fetch(url, {
+            headers: {
+              Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
+            },
+          });
+
+          const data = await res.json();
+
+          if (!data.data || data.data.length === 0) {
+            console.log("No record found for update");
+            return;
+          }
+
+          // ✅ SAFE MATCH
+          const record = data.data.find((r) => {
+            if (!r.decrypted_meres) return false;
+            const parts = r.decrypted_meres.split("|");
+            return parts[1] === orderId;
+          });
+
+          if (!record) {
+            console.log("Exact match not found");
+            return;
+          }
+
+          const name = record.name;
+
+          // ✏️ STEP 2 — UPDATE plain_text
+          await fetch(
+            `https://software.aayushcare.com/api/resource/Online%20Payment%20Log/${name}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
+              },
+              body: JSON.stringify({
+                plain_text: plainText,
+              }),
+            },
+          );
+
+          console.log("Plain text updated for:", orderId);
+        } catch (err) {
+          console.error("Update error:", err);
+        }
+      }
+
+      function showQR(upiUrl) {
+        document.getElementById("qrModal").style.display = "flex";
+
+        const qrContainer = document.getElementById("qrCode");
+        qrContainer.innerHTML = "";
+
+        new QRCode(qrContainer, {
+          text: upiUrl,
+          width: 220,
+          height: 220,
+        });
+
+        document.getElementById("upiBtn").onclick = () => {
+          window.location.href = upiUrl;
+        };
+      }
+
+      function closeQR() {
+        document.getElementById("qrModal").style.display = "none";
+      }
+
+      async function startPaymentCheck(orderId) {
+        let attempts = 0;
+
+        const interval = setInterval(async () => {
+          attempts++;
+
+          try {
+            const filters = JSON.stringify([
+              ["decrypted_meres", "like", "%" + orderId + "%"],
+            ]);
+
+            const fields = JSON.stringify(["name", "decrypted_meres"]);
+            const url = `https://software.aayushcare.com/api/resource/Online%20Payment%20Log?filters=${filters}&fields=${fields}`;
+
+            const res = await fetch(url, {
+              headers: {
+                Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
+              },
+            });
+
+            const data = await res.json();
+
+            if (data.data && data.data.length > 0) {
+              const record = data.data.find((r) => {
+                const parsed = parseMeres(r.decrypted_meres);
+                return parsed && parsed.orderId === orderId;
+              });
+
+              console.log("Matched Payment:", record);
+
+              const meresData = parseMeres(record.decrypted_meres);
+
+              console.log("MERES DATA:", meresData);
+
+              if (
+                meresData &&
+                meresData.status === "SUCCESS" &&
+                meresData.orderId === orderId
+              ) {
+                const snapshot = await db
+                  .ref("appointments/" + orderId)
+                  .once("value");
+                const firebaseData = snapshot.val();
+
+                if (!firebaseData) {
+                  clearInterval(interval);
+                  alert("Order not found");
+                  return;
+                }
+
+                if (firebaseData.status === "PAID") {
+                  clearInterval(interval);
+                  alert("Order already used");
+                  return;
+                }
+
+                const expectedAmount = parseFloat(firebaseData.amount);
+                const paidAmount = parseFloat(meresData.amount);
+
+                if (expectedAmount === paidAmount) {
+                  await db.ref("appointments/" + orderId).update({
+                    status: "PAID",
+                  });
+
+                  clearInterval(interval);
+                  window.location.href = "PaymentSuccess.html";
+                } else {
+                  clearInterval(interval);
+                  alert("Amount mismatch - Tampering detected");
+                }
+              } else if (meresData && meresData.status === "FAILED") {
+                clearInterval(interval);
+                alert("Payment Failed ❌");
+              } else {
+                console.log("Still processing...");
+              }
+            }
+
+            if (attempts > 24) {
+              clearInterval(interval);
+              alert("Payment not confirmed. Please check.");
+            }
+          } catch (err) {
+            console.error("ERROR:", err);
+          }
+        }, 5000);
+      }
+
+      function parseMeres(meres) {
+        if (!meres) return null;
+
+        const parts = meres.split("|");
+
+        return {
+          orderId: parts[1],
+          amount: parseFloat(parts[2]),
+          status: parts[4],
+        };
+      }
+
+      /* init */
+      document.addEventListener("DOMContentLoaded", () => {
+        setMinAppointmentDate(daysBuffer);
+        // show blocked list if any
+        if (blockedDates.length) {
+          blockedDatesList.style.display = "block";
+          blockedDatesList.textContent =
+            "Unavailable dates: " + blockedDates.join(", ");
+        } else {
+          blockedDatesList.style.display = "none";
+        }
+        // build default radios when date chosen later
+        appointmentDateInput.addEventListener("change", onDatePicked);
+        // ensure global selectedCustomerType set
+        window.selectedCustomerType = selectedCustomerType;
+      });
     </script>
-    </body>
-    </html>
+  </body>
+</html>
