@@ -91,6 +91,10 @@
           <input type="tel" id="newContact" placeholder="Enter contact number"
         /></label>
         <label
+          >Email ID:
+          <input type="tel" id="newEmail" placeholder="Enter email ID"
+        /></label>
+        <label
           >State:
           <select id="newState">
             <option value="">-- Select State --</option>
@@ -921,16 +925,18 @@
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                amount: "129.15",
+                amount: currentAmount.toFixed(2), //"129.15",
                 customer_id: "",
                 currency: "INR",
-                phone: "9878766867",
-                email: "hello1@gmail.com",
+                phone: document.getElementById("newContact")?.value || "", //"9878766867",
+                email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
                 return_url:
                   "https://hdfc-payment-gateway.netlify.app/.netlify/functions/verify-order",
               }),
             },
           );
+
+          console.log("res is", res);
 
           const data = await res.json();
           console.log(data);
