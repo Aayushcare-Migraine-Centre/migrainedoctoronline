@@ -4,65 +4,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
+    <link rel="stylesheet" href="styles/appointment.css" />
     <link rel="stylesheet" href="styles/payspinner.css" />
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Appointment Booking</title>
-    <style>
-              :root{--primary-color:#83358F;--bg-color:#f9f9f9;--border-color:#ddd;--font-color:#333}
-              body{font-family:"Segoe UI",sans-serif;background:var(--bg-color);color:var(--font-color);padding:20px;margin:0}
-              .container{max-width:600px;margin:auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-              .logo{width:200px;display:block;margin:0 auto 20px;height:auto}
-              h2{text-align:center;margin-bottom:25px;color:var(--primary-color)}
-              .customer-tabs{display:flex;justify-content:center;margin-bottom:25px;gap:10px}
-              .tab{flex:1;text-align:center;padding:12px 16px;border-radius:8px;background:#e0e0e0;color:#333;cursor:pointer;font-weight:700;transition:background .3s;border:2px solid transparent}
-              .tab.active{background:var(--primary-color);color:#fff;border-color:var(--primary-color);box-shadow:0 4px 10px rgba(131,53,143,.3)}
-              .section{margin-bottom:20px}
-              label{display:block;margin-bottom:10px}
-              input[type="text"],input[type="tel"],select,input[type="date"]{width:100%;padding:10px;margin-top:5px;border:1px solid var(--border-color);border-radius:6px;font-size:16px;outline:none;transition:border-color .3s,box-shadow .3s}
-                input:focus,select:focus{border-color:var(--primary-color);box-shadow:0 0 5px rgba(131,53,143,.4)}
-              .radio-group{display:flex;gap:15px;margin-top:10px}
-              .time-range{margin:15px 0;display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-              .slots-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-              .slot{background:#fff;border:1px solid var(--border-color);border-radius:6px;cursor:pointer;transition:background .2s,color .2s;border-color .2s;font-size:16px;font-weight:700;text-align:center;flex:0 0 150px;height:50px;display:flex;align-items:center;justify-content:center;padding:6px}
-              .slot:hover{background:var(--primary-color);color:#fff}
-              .slot.selected{background:var(--primary-color);color:#fff;border-color:var(--primary-color);box-shadow:0 0 8px rgba(131,53,143,.4)}
-              .hidden{display:none}
-              .large-slot{flex:0 1 30%;min-width:130px;max-width:160px;height:60px;padding:8px 4px;font-size:18px;font-weight:600;border:2px solid var(--border-color);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;transition:all .25s}
-              .large-slot:hover{background:var(--primary-color);color:#fff;transform:translateY(-2px)}
-              button{background:var(--primary-color);color:#fff;font-size:18px;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer}
-              @media(max-width:600px){.large-slot{flex:1 1 100%;max-width:none}}
-              .test-banner {
-        background: #ffcc00;
-        color: #000;
-        padding: 12px;
-        text-align: center;
-        font-weight: bold;
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        border-bottom: 2px solid #e6b800;
-      }
-              /* follow-up small uniform slots */
-          .small-slot{
-            flex: 0 0 90px;           /* fixed narrow width */
-            height: 36px;             /* shorter height */
-            font-size: 14px;          /* smaller text */
-            padding: 4px 6px;
-            border-radius: 6px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            box-sizing: border-box;
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-          }
-          @media (max-width:600px){
-            .small-slot{flex:0 0 72px;height:34px;font-size:13px}
-          }
-    </style>
   </head>
   <body>
     <div class="test-banner">
@@ -84,24 +31,32 @@
 
       <div class="section" id="newCustomerSection">
         <label
-          >Name: <input type="text" id="newName" placeholder="Enter full name"
-        /></label>
+          >Name:
+          <input type="text" id="newName" placeholder="Enter full name" />
+          <div id="newName_error" class="error"></div
+        ></label>
+
         <label
           >Contact No:
-          <input type="tel" id="newContact" placeholder="Enter contact number"
-        /></label>
+          <input
+            type="tel"
+            id="newContact"
+            placeholder="Enter contact number" />
+          <div id="newContact_error" class="error"></div
+        ></label>
+
         <label
           >Email ID:
-          <input type="tel" id="newEmail" placeholder="Enter email ID"
-        /></label>
+          <input type="email" id="newEmail" placeholder="Enter email ID" />
+          <div id="newEmail_error" class="error"></div
+        ></label>
+
         <label
           >State:
           <select id="newState">
             <option value="">-- Select State --</option>
-            <option value="kerala">Kerala</option>
-            <option value="tamilnadu">Tamil Nadu</option>
-            <option value="karnataka">Karnataka</option>
           </select>
+          <div id="newState_error" class="error"></div>
         </label>
         <label
           >District:
@@ -217,109 +172,16 @@
         >
           ₹0
         </div>
+
+        <div id="reviewSection" class="hidden"></div>
+
         <button id="payButton" type="button">Pay Now</button>
       </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> -->
 
-    <!-- <div
-      id="qrModal"
-      style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-      "
-    >
-      <div
-        style="
-          background: #fff;
-          padding: 25px;
-          border-radius: 12px;
-          text-align: center;
-          width: 320px;
-          position: relative;
-        "
-      >
-        <button
-          onclick="closeQR()"
-          style="
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            border: none;
-            background: none;
-            font-size: 18px;
-            cursor: pointer;
-          "
-        >
-          ✖
-        </button>
-
-        <h3>Scan to Pay</h3>
-
-        <div id="qrCode" style="margin: 15px 0"></div>
-
-        <div style="margin: 10px 0; font-weight: bold">OR</div>
-
-        <button id="upiBtn" style="width: 100%">Open UPI App</button>
-      </div>
-    </div> -->
     <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyDXdP6EmwBEyGt7K6s8p3_QrqmbGZEzWAs",
-        authDomain: "appointmentaayushcare.firebaseapp.com",
-        projectId: "appointmentaayushcare",
-        storageBucket: "appointmentaayushcare.firebasestorage.app",
-        messagingSenderId: "784933001457",
-        appId: "1:784933001457:web:929f2bff52e69ee7a43150",
-      };
-
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
-
-      async function saveAppointmentToFirebase(orderId) {
-        const data = {
-          orderId: orderId,
-          customerType: selectedCustomerType,
-
-          name: document.getElementById("newName")?.value || "",
-          contact: document.getElementById("newContact")?.value || "",
-          state: document.getElementById("newState")?.value || "",
-          district: document.getElementById("newDistrict")?.value || "",
-          place: document.getElementById("newPlace")?.value || "",
-          language: document.getElementById("newLanguage")?.value || "",
-          referral: document.getElementById("newReferral")?.value || "",
-          doctor: document.getElementById("newDoctor")?.value || "",
-
-          patientId: document.getElementById("customerId")?.value || "",
-
-          mode:
-            document.querySelector('input[name="modeNew"]:checked')?.value ||
-            document.querySelector('input[name="modeOld"]:checked')?.value ||
-            "",
-
-          date: document.getElementById("appointmentDate")?.value || "",
-
-          slotStart: selectedSlot?.start || "",
-          slotEnd: selectedSlot?.end || "",
-          slotLabel: selectedSlot?.label || "",
-
-          amount: currentAmount,
-          status: "PENDING",
-          createdAt: new Date().toISOString(),
-        };
-
-        await db.ref("appointments/" + orderId).set(data);
-      }
-
       /* ---------- CONFIG ---------- */
       const blockedDates = []; // add 'YYYY-MM-DD' if needed
       let daysBuffer = 2;
@@ -331,17 +193,6 @@
           alex_only: 750,
         },
         old: 250,
-      };
-
-      /* ---------- HDFC UPI CONFIG ---------- */
-      const UPI_CONFIG = {
-        ver: "01",
-        mode: "15", // UAT only
-        vpa: "aayushcare@hdfcbank",
-        name: "AAYUSHCARE",
-        mcc: "6012", // UAT (LIVE will be 8062)
-        currency: "INR",
-        qrMedium: "06",
       };
 
       let currentAmount = 0; // holds payable amount
@@ -421,115 +272,6 @@
       let selectedCustomerType = "new";
       window.selectedCustomerType = selectedCustomerType;
       let selectedSlot = null;
-
-      /* ---------- district data (kept short) ---------- */
-      const stateDistricts = {
-        kerala: [
-          "Thiruvananthapuram",
-          "Kollam",
-          "Pathanamthitta",
-          "Alappuzha",
-          "Kottayam",
-          "Idukki",
-          "Ernakulam",
-          "Thrissur",
-          "Palakkad",
-          "Malappuram",
-          "Kozhikode",
-          "Wayanad",
-          "Kannur",
-          "Kasaragod",
-        ],
-        tamilnadu: [
-          "Ariyalur",
-          "Chengalpattu",
-          "Chennai",
-          "Coimbatore",
-          "Cuddalore",
-          "Dharmapuri",
-          "Dindigul",
-          "Erode",
-          "Kallakurichi",
-          "Kancheepuram",
-          "Karur",
-          "Krishnagiri",
-          "Madurai",
-          "Mayiladuthurai",
-          "Nagapattinam",
-          "Namakkal",
-          "Nilgiris",
-          "Perambalur",
-          "Pudukkottai",
-          "Ramanathapuram",
-          "Ranipet",
-          "Salem",
-          "Sivaganga",
-          "Tenkasi",
-          "Thanjavur",
-          "Theni",
-          "Thoothukudi",
-          "Tiruchirappalli",
-          "Tirunelveli",
-          "Tirupathur",
-          "Tiruppur",
-          "Tiruvallur",
-          "Tiruvannamalai",
-          "Tiruvarur",
-          "Vellore",
-          "Viluppuram",
-          "Virudhunagar",
-        ],
-        karnataka: [
-          "Bagalkot",
-          "Ballari",
-          "Belagavi",
-          "Bengaluru Rural",
-          "Bengaluru Urban",
-          "Bidar",
-          "Chamarajanagar",
-          "Chikballapur",
-          "Chikkamagaluru",
-          "Chitradurga",
-          "Dakshina Kannada",
-          "Davanagere",
-          "Dharwad",
-          "Gadag",
-          "Hassan",
-          "Haveri",
-          "Kalaburagi",
-          "Kodagu",
-          "Kolar",
-          "Koppal",
-          "Mandya",
-          "Mysuru",
-          "Raichur",
-          "Ramanagara",
-          "Shivamogga",
-          "Tumakuru",
-          "Udupi",
-          "Uttara Kannada",
-          "Vijayapura",
-          "Yadgir",
-        ],
-      };
-      const stateSelect = document.getElementById("newState");
-      const districtSelect = document.getElementById("newDistrict");
-      if (stateSelect) {
-        stateSelect.addEventListener("change", () => {
-          const st = stateSelect.value;
-          districtSelect.innerHTML =
-            '<option value="">-- Select District --</option>';
-          districtSelect.disabled = true;
-          if (!st) return;
-          (stateDistricts[st] || []).forEach((d) => {
-            const o = document.createElement("option");
-            o.value = d.toLowerCase().replace(/\s+/g, "_");
-            o.textContent = d;
-            districtSelect.appendChild(o);
-          });
-          districtSelect.disabled = false;
-        });
-      }
 
       /* ---------- helpers ---------- */
       function pad(n) {
@@ -831,31 +573,6 @@
         }
       }
 
-      /* ---------- HDFC UPI HELPERS ---------- */
-      /* let currentTxnId = null;
-
-      function generateTxnId() {
-        currentTxnId = "ORD" + Date.now(); // ✅ CHANGE APT → ORD
-        return currentTxnId;
-      } */
-
-      /* function buildUPILink(amount) {
-        const params = new URLSearchParams({
-          ver: UPI_CONFIG.ver,
-          mode: UPI_CONFIG.mode,
-          tr: generateTxnId(),
-          tn: "Appointment Booking",
-          pn: UPI_CONFIG.name,
-          pa: UPI_CONFIG.vpa,
-          mc: UPI_CONFIG.mcc,
-          am: amount.toFixed(2),
-          cu: UPI_CONFIG.currency,
-          qrMedium: UPI_CONFIG.qrMedium,
-        });
-
-        return `upi://pay?${params.toString().replace("%40", "@")}`;
-      } */
-
       /* newDoctor change */
       if (newDoctorSelect) {
         newDoctorSelect.addEventListener("change", () => {
@@ -866,7 +583,7 @@
       /* patientId fetch (unchanged) */
       const customerIdInput = document.getElementById("customerId");
       let debounceTimer;
-      customerIdInput?.addEventListener("input", () => { 
+      customerIdInput?.addEventListener("input", () => {
         clearTimeout(debounceTimer);
         const id = customerIdInput.value.trim();
         if (!id) {
@@ -932,11 +649,10 @@
                 email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
                 return_url:
                   "https://hdfc-payment-gateway.netlify.app/.netlify/functions/verify-order",
+                  udf1:"Ashique"
               }),
             },
           );
-
-          console.log("res is", res);
 
           const data = await res.json();
           console.log(data);
@@ -952,208 +668,7 @@
           alert("Network error. Please try again.");
           document.getElementById("premiumOverlay").style.display = "none";
         }
-
-        /* const upiUrl = buildUPILink(currentAmount);
-
-          // SAFE: do NOT generate again if already created
-          if (!currentTxnId) {
-            console.error("Txn ID missing!");
-            return;
-          }
-
-          await saveAppointmentToFirebase(currentTxnId);
-
-          await updatePlainText(currentTxnId);
-
-          showQR(upiUrl);
-
-          startPaymentCheck(currentTxnId); */
       });
-
-      /* async function updatePlainText(orderId) {
-        const merchantId = "HDFC000010874024";
-
-        // ✅ CORRECT FORMAT (VERY IMPORTANT)
-        const plainText = `${merchantId}|${orderId}|||||||||||NA|NA`;
-
-        try {
-          // 🔍 STEP 1 — FIND RECORD
-          const filters = JSON.stringify([
-            ["decrypted_meres", "like", "%" + orderId + "%"],
-          ]);
-
-          const fields = JSON.stringify(["name", "decrypted_meres"]);
-
-          const url = `https://software.aayushcare.com/api/resource/Online%20Payment%20Log?filters=${filters}&fields=${fields}`;
-
-          const res = await fetch(url, {
-            headers: {
-              Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
-            },
-          });
-
-          const data = await res.json();
-
-          if (!data.data || data.data.length === 0) {
-            console.log("No record found for update");
-            return;
-          }
-
-          // ✅ SAFE MATCH
-          const record = data.data.find((r) => {
-            if (!r.decrypted_meres) return false;
-            const parts = r.decrypted_meres.split("|");
-            return parts[1] === orderId;
-          });
-
-          if (!record) {
-            console.log("Exact match not found");
-            return;
-          }
-
-          const name = record.name;
-
-          // ✏️ STEP 2 — UPDATE plain_text
-          await fetch(
-            `https://software.aayushcare.com/api/resource/Online%20Payment%20Log/${name}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
-              },
-              body: JSON.stringify({
-                plain_text: plainText,
-              }),
-            },
-          );
-
-          console.log("Plain text updated for:", orderId);
-        } catch (err) {
-          console.error("Update error:", err);
-        }
-      } */
-
-      /* function showQR(upiUrl) {
-        document.getElementById("qrModal").style.display = "flex";
-
-        const qrContainer = document.getElementById("qrCode");
-        qrContainer.innerHTML = "";
-
-        new QRCode(qrContainer, {
-          text: upiUrl,
-          width: 220,
-          height: 220,
-        });
-
-        document.getElementById("upiBtn").onclick = () => {
-          window.location.href = upiUrl;
-        };
-      } */
-
-      /* function closeQR() {
-        document.getElementById("qrModal").style.display = "none";
-      } */
-
-      /* async function startPaymentCheck(orderId) {
-        let attempts = 0;
-
-        const interval = setInterval(async () => {
-          attempts++;
-
-          try {
-            const filters = JSON.stringify([
-              ["decrypted_meres", "like", "%" + orderId + "%"],
-            ]);
-
-            const fields = JSON.stringify(["name", "decrypted_meres"]);
-            const url = `https://software.aayushcare.com/api/resource/Online%20Payment%20Log?filters=${filters}&fields=${fields}`;
-
-            const res = await fetch(url, {
-              headers: {
-                Authorization: "token 7897c339c442e4b:01ff7013b92aa32",
-              },
-            });
-
-            const data = await res.json();
-
-            if (data.data && data.data.length > 0) {
-              const record = data.data.find((r) => {
-                const parsed = parseMeres(r.decrypted_meres);
-                return parsed && parsed.orderId === orderId;
-              });
-
-              console.log("Matched Payment:", record);
-
-              const meresData = parseMeres(record.decrypted_meres);
-
-              console.log("MERES DATA:", meresData);
-
-              if (
-                meresData &&
-                meresData.status === "SUCCESS" &&
-                meresData.orderId === orderId
-              ) {
-                const snapshot = await db
-                  .ref("appointments/" + orderId)
-                  .once("value");
-                const firebaseData = snapshot.val();
-
-                if (!firebaseData) {
-                  clearInterval(interval);
-                  alert("Order not found");
-                  return;
-                }
-
-                if (firebaseData.status === "PAID") {
-                  clearInterval(interval);
-                  alert("Order already used");
-                  return;
-                }
-
-                const expectedAmount = parseFloat(firebaseData.amount);
-                const paidAmount = parseFloat(meresData.amount);
-
-                if (expectedAmount === paidAmount) {
-                  await db.ref("appointments/" + orderId).update({
-                    status: "PAID",
-                  });
-
-                  clearInterval(interval);
-                  window.location.href = "PaymentSuccess.html";
-                } else {
-                  clearInterval(interval);
-                  alert("Amount mismatch - Tampering detected");
-                }
-              } else if (meresData && meresData.status === "FAILED") {
-                clearInterval(interval);
-                alert("Payment Failed ❌");
-              } else {
-                console.log("Still processing...");
-              }
-            }
-
-            if (attempts > 24) {
-              clearInterval(interval);
-              alert("Payment not confirmed. Please check.");
-            }
-          } catch (err) {
-            console.error("ERROR:", err);
-          }
-        }, 5000);
-      } */
-
-      /* function parseMeres(meres) {
-        if (!meres) return null;
-
-        const parts = meres.split("|");
-
-        return {
-          orderId: parts[1],
-          amount: parseFloat(parts[2]),
-          status: parts[4],
-        };
-      } */
 
       /* init */
       document.addEventListener("DOMContentLoaded", () => {
@@ -1181,5 +696,7 @@
         <div class="premium-text">Securely connecting to payment gateway…</div>
       </div>
     </div>
+
+    <script src="scripts/appointment.js"></script>
   </body>
 </html>
