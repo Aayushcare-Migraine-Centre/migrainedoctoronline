@@ -223,7 +223,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <div
+    <!-- <div
       id="qrModal"
       style="
         display: none;
@@ -271,7 +271,7 @@
 
         <button id="upiBtn" style="width: 100%">Open UPI App</button>
       </div>
-    </div>
+    </div> -->
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyDXdP6EmwBEyGt7K6s8p3_QrqmbGZEzWAs",
@@ -832,14 +832,14 @@
       }
 
       /* ---------- HDFC UPI HELPERS ---------- */
-      let currentTxnId = null;
+      /* let currentTxnId = null;
 
       function generateTxnId() {
         currentTxnId = "ORD" + Date.now(); // ✅ CHANGE APT → ORD
         return currentTxnId;
-      }
+      } */
 
-      function buildUPILink(amount) {
+      /* function buildUPILink(amount) {
         const params = new URLSearchParams({
           ver: UPI_CONFIG.ver,
           mode: UPI_CONFIG.mode,
@@ -854,7 +854,7 @@
         });
 
         return `upi://pay?${params.toString().replace("%40", "@")}`;
-      }
+      } */
 
       /* newDoctor change */
       if (newDoctorSelect) {
@@ -866,7 +866,7 @@
       /* patientId fetch (unchanged) */
       const customerIdInput = document.getElementById("customerId");
       let debounceTimer;
-      customerIdInput?.addEventListener("input", () => {
+      customerIdInput?.addEventListener("input", () => { 
         clearTimeout(debounceTimer);
         const id = customerIdInput.value.trim();
         if (!id) {
@@ -970,7 +970,7 @@
           startPaymentCheck(currentTxnId); */
       });
 
-      async function updatePlainText(orderId) {
+      /* async function updatePlainText(orderId) {
         const merchantId = "HDFC000010874024";
 
         // ✅ CORRECT FORMAT (VERY IMPORTANT)
@@ -1032,9 +1032,9 @@
         } catch (err) {
           console.error("Update error:", err);
         }
-      }
+      } */
 
-      function showQR(upiUrl) {
+      /* function showQR(upiUrl) {
         document.getElementById("qrModal").style.display = "flex";
 
         const qrContainer = document.getElementById("qrCode");
@@ -1049,13 +1049,13 @@
         document.getElementById("upiBtn").onclick = () => {
           window.location.href = upiUrl;
         };
-      }
+      } */
 
-      function closeQR() {
+      /* function closeQR() {
         document.getElementById("qrModal").style.display = "none";
-      }
+      } */
 
-      async function startPaymentCheck(orderId) {
+      /* async function startPaymentCheck(orderId) {
         let attempts = 0;
 
         const interval = setInterval(async () => {
@@ -1141,9 +1141,9 @@
             console.error("ERROR:", err);
           }
         }, 5000);
-      }
+      } */
 
-      function parseMeres(meres) {
+      /* function parseMeres(meres) {
         if (!meres) return null;
 
         const parts = meres.split("|");
@@ -1153,7 +1153,7 @@
           amount: parseFloat(parts[2]),
           status: parts[4],
         };
-      }
+      } */
 
       /* init */
       document.addEventListener("DOMContentLoaded", () => {
