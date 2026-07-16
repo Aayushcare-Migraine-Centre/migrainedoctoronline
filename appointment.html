@@ -927,12 +927,13 @@
                 phone: "9878766867",
                 email: "hello1@gmail.com",
                 return_url:
-                  "https://www.migrainedoctoronline.com/PaymentSuccess.html",
+                  "https://hdfc-payment-gateway.netlify.app/.netlify/functions/verify-order",
               }),
             },
           );
 
           const data = await res.json();
+          console.log(data);
 
           if (!res.ok) {
             alert("Something went wrong. Please try again.");
