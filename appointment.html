@@ -37,6 +37,19 @@
         ></label>
 
         <label
+          >Country:
+          <select id="newCountry">
+            <option value="">-- Select Country --</option>
+          </select>
+          <div id="newState_error" class="error"></div>
+        </label>
+        <label id="stateWrapper" style="display:none">State:
+          <select id="newState">
+            <option value="">-- Select State --</option>
+          </select>
+        </label>
+
+        <label
           >Contact No:
           <input
             type="tel"
@@ -51,19 +64,6 @@
           <div id="newEmail_error" class="error"></div
         ></label>
 
-        <label
-          >State:
-          <select id="newState">
-            <option value="">-- Select State --</option>
-          </select>
-          <div id="newState_error" class="error"></div>
-        </label>
-        <label
-          >District:
-          <select id="newDistrict" disabled>
-            <option value="">-- Select District --</option>
-          </select>
-        </label>
         <label
           >Place: <input type="text" id="newPlace" placeholder="Enter place"
         /></label>
@@ -647,9 +647,8 @@
                 currency: "INR",
                 phone: document.getElementById("newContact")?.value || "", //"9878766867",
                 email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
-                return_url:
-                  "https://api.migrainedoctoronline.com/verify-order",
-                  udf1:"Ashique"
+                return_url: "https://api.migrainedoctoronline.com/verify-order",
+                udf1: "Ashique",
               }),
             },
           );
