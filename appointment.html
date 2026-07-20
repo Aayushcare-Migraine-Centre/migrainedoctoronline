@@ -637,7 +637,7 @@
 
         try {
           const res = await fetch(
-            "https://hdfc-payment-gateway.netlify.app/.netlify/functions/create-order",
+            "https://api.migrainedoctoronline.com/create-order",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -648,7 +648,7 @@
                 phone: document.getElementById("newContact")?.value || "", //"9878766867",
                 email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
                 return_url:
-                  "https://hdfc-payment-gateway.netlify.app/.netlify/functions/verify-order",
+                  "https://api.migrainedoctoronline.com/verify-order",
                   udf1:"Ashique"
               }),
             },
@@ -665,6 +665,7 @@
           //Redirecting user to HDFC payment page
           window.location.href = data.payment_links.web;
         } catch (err) {
+          console.log(err);
           alert("Network error. Please try again.");
           document.getElementById("premiumOverlay").style.display = "none";
         }
