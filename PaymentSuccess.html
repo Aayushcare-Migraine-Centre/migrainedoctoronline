@@ -175,7 +175,8 @@
 
             if (
               data.status === "AUTHENTICATION_FAILED" ||
-              data.status === "AUTHORIZATION_FAILED"
+              data.status === "AUTHORIZATION_FAILED" ||
+              data.status == "JUSPAY_DECLINED"
             ) {
               showFailure();
             }
@@ -215,7 +216,8 @@
         showSuccess();
       } else if (
         status === "AUTHENTICATION_FAILED" ||
-        status === "AUTHORIZATION_FAILED"
+        status === "AUTHORIZATION_FAILED" ||
+        status === "JUSPAY_DECLINED"
       ) {
         showFailure();
       } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
