@@ -210,20 +210,57 @@
     `,
       };
 
+      function startPolling() {
+        setInterval(async () => {
+          try {
+            const res = await fetch(
+              `https://api.migrainedoctoronline.com/order-status?order_id=${orderId}`,
+            );
+            const data = await res.json();
+
+            console.log("Polled status:", data.status);
+
+            if (data.status === "CHARGED") {
+              title.textContent = "Payment Successful";
+              message.textContent =
+                "Your payment has been completed successfully.";
+              iconContainer.innerHTML = icons.CHARGED;
+            }
+
+            if (
+              data.status === "AUTHENTICATION_FAILED" ||
+              data.status == "AUTHORIZATION_FAILED"
+            ) {
+              title.textContent = "Payment Failed";
+              message.textContent =
+                "Your payment could not be completed. Please try again.";
+              iconContainer.innerHTML = icons.FAILED;
+            }
+          } catch (err) {
+            console.error("Polling error:", err);
+          }
+        }, 5000); // poll every 5 seconds
+      }
+
       // Apply dynamic content based on status
       if (status === "CHARGED") {
         title.textContent = "Payment Successful";
         message.textContent = "Your payment has been completed successfully.";
         iconContainer.innerHTML = icons.CHARGED;
-      } else if (status === "FAILED") {
+      } else if (
+        status === "AUTHENTICATION_FAILED" ||
+        status == "AUTHORIZATION_FAILED"
+      ) {
         title.textContent = "Payment Failed";
         message.textContent =
           "Your payment could not be completed. Please try again.";
         iconContainer.innerHTML = icons.FAILED;
-      } else if (status === "PENDING") {
+      } else if (status === "PENDING_VBV" || status == "AUTHORIZING") {
         title.textContent = "Payment Pending";
         message.textContent = "Your payment is still processing. Please wait.";
         iconContainer.innerHTML = icons.PENDING;
+
+        //startPolling();
       }
 
       // Timer redirect
