@@ -1,123 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Successful</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Successful</title>
 
-<style>
-:root{
-  --primary:#83358F;
-  --bg:#f4f6fb;
-  --text:#333;
-  --success:#28a745;
-}
+    <style>
+      :root {
+        --primary: #83358f;
+        --bg: #f4f6fb;
+        --text: #333;
+        --success: #28a745;
+      }
 
-body{
-  margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:var(--bg);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-  color:var(--text);
-}
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: var(--text);
+      }
 
-.card{
-  background:#fff;
-  padding:40px 30px;
-  border-radius:16px;
-  text-align:center;
-  max-width:420px;
-  width:90%;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  animation:fadeIn .6s ease;
-}
+      .card {
+        background: #fff;
+        padding: 40px 30px;
+        border-radius: 16px;
+        text-align: center;
+        max-width: 420px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeIn 0.6s ease;
+      }
 
-h1{
-  margin:15px 0 10px;
-  color:var(--primary);
-}
+      h1 {
+        margin: 15px 0 10px;
+        color: var(--primary);
+      }
 
-p{
-  font-size:15px;
-  color:#666;
-}
+      p {
+        font-size: 15px;
+        color: #666;
+      }
 
-.home-btn{
-  display:inline-block;
-  margin-top:25px;
-  padding:12px 26px;
-  background:var(--primary);
-  color:#fff;
-  text-decoration:none;
-  border-radius:8px;
-  font-weight:600;
-  transition:.3s;
-}
+      .home-btn {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 26px;
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: 0.3s;
+      }
 
-.home-btn:hover{
-  background:#6a2c72;
-}
+      .home-btn:hover {
+        background: #6a2c72;
+      }
 
-.timer{
-  margin-top:15px;
-  font-size:14px;
-  color:#888;
-}
+      .timer {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #888;
+      }
 
-/* ✅ Animated checkmark */
-.checkmark-circle{
-  width:90px;
-  height:90px;
-  position:relative;
-  display:inline-block;
-}
+      /* ✅ Animated checkmark */
+      .checkmark-circle {
+        width: 90px;
+        height: 90px;
+        position: relative;
+        display: inline-block;
+      }
 
-.checkmark-circle svg{
-  width:90px;
-  height:90px;
-}
+      .checkmark-circle svg {
+        width: 90px;
+        height: 90px;
+      }
 
-.circle{
-  stroke-dasharray:283;
-  stroke-dashoffset:283;
-  stroke-width:6;
-  stroke:var(--success);
-  fill:none;
-  animation:drawCircle .6s forwards ease-out;
-}
+      .circle {
+        stroke-dasharray: 283;
+        stroke-dashoffset: 283;
+        stroke-width: 6;
+        stroke: var(--success);
+        fill: none;
+        animation: drawCircle 0.6s forwards ease-out;
+      }
 
-.check{
-  stroke-dasharray:75;
-  stroke-dashoffset:75;
-  stroke-width:6;
-  stroke:var(--success);
-  fill:none;
-  animation:drawCheck .4s .6s forwards ease-out;
-}
+      .check {
+        stroke-dasharray: 75;
+        stroke-dashoffset: 75;
+        stroke-width: 6;
+        stroke: var(--success);
+        fill: none;
+        animation: drawCheck 0.4s 0.6s forwards ease-out;
+      }
 
-@keyframes drawCircle{
-  to{stroke-dashoffset:0;}
-}
+      @keyframes drawCircle {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
 
-@keyframes drawCheck{
-  to{stroke-dashoffset:0;}
-}
+      @keyframes drawCheck {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
 
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(15px);}
-  to{opacity:1;transform:translateY(0);}
-}
-</style>
-</head>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <!-- <div class="card">
 
-<div class="card">
-
-  <!-- ✅ Animated Check -->
   <div class="checkmark-circle">
     <svg viewBox="0 0 100 100">
       <circle class="circle" cx="50" cy="50" r="45"/>
@@ -136,13 +144,108 @@ p{
 
   <a href="index.html" class="home-btn">Go to Home</a>
 
-</div>
+</div> -->
 
-<script>
+    <div class="card">
+      <!-- Dynamic Icon -->
+      <div class="checkmark-circle" id="status-icon">
+        <!-- Default icon (will be replaced by JS) -->
+        <svg viewBox="0 0 100 100">
+          <circle class="circle" cx="50" cy="50" r="45" />
+          <polyline class="check" points="30,55 45,70 70,40" />
+        </svg>
+      </div>
+
+      <h1 id="status-title">Payment Successful</h1>
+
+      <p id="status-message">
+        Your appointment booking payment has been completed successfully.
+      </p>
+      <p id="signature-message"></p>
+
+      <div class="timer">
+        Redirecting to home in <span id="count">5</span> seconds...
+      </div>
+
+      <a href="index.html" class="home-btn">Go to Home</a>
+    </div>
+
+    <script>
+      // Read URL parameters
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get("order_id");
+      const status = params.get("status");
+      const signatureMatch = params.get("signature_match");
+
+      // DOM elements
+      const title = document.getElementById("status-title");
+      const message = document.getElementById("status-message");
+      const signatureMsg = document.getElementById("signature-message");
+      const iconContainer = document.getElementById("status-icon");
+
+      // Update signature message
+      signatureMsg.textContent = "Signature Verified: " + signatureMatch;
+
+      // Dynamic icon SVGs
+      const icons = {
+        CHARGED: `
+      <svg viewBox="0 0 100 100">
+        <circle class="circle" cx="50" cy="50" r="45" stroke="#28a745"/>
+        <polyline class="check" points="30,55 45,70 70,40" stroke="#28a745"/>
+      </svg>
+    `,
+        FAILED: `
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" stroke="#d9534f" stroke-width="6" fill="none"/>
+        <line x1="30" y1="30" x2="70" y2="70" stroke="#d9534f" stroke-width="6"/>
+        <line x1="70" y1="30" x2="30" y2="70" stroke="#d9534f" stroke-width="6"/>
+      </svg>
+    `,
+        PENDING: `
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" stroke="#f0ad4e" stroke-width="6" fill="none"/>
+        <line x1="50" y1="20" x2="50" y2="50" stroke="#f0ad4e" stroke-width="6"/>
+        <line x1="50" y1="50" x2="70" y2="60" stroke="#f0ad4e" stroke-width="6"/>
+      </svg>
+    `,
+      };
+
+      // Apply dynamic content based on status
+      if (status === "CHARGED") {
+        title.textContent = "Payment Successful";
+        message.textContent = "Your payment has been completed successfully.";
+        iconContainer.innerHTML = icons.CHARGED;
+      } else if (status === "FAILED") {
+        title.textContent = "Payment Failed";
+        message.textContent =
+          "Your payment could not be completed. Please try again.";
+        iconContainer.innerHTML = icons.FAILED;
+      } else if (status === "PENDING") {
+        title.textContent = "Payment Pending";
+        message.textContent = "Your payment is still processing. Please wait.";
+        iconContainer.innerHTML = icons.PENDING;
+      }
+
+      // Timer redirect
+      let time = 5;
+      const count = document.getElementById("count");
+
+      /* const timer = setInterval(() => {
+        time--;
+        count.textContent = time;
+
+        if (time === 0) {
+          clearInterval(timer);
+          window.location.href = "index.html";
+        }
+      }, 1000); */
+    </script>
+
+    <!-- <script>
 let time = 5;
 const count = document.getElementById("count");
 
-const timer = setInterval(()=>{
+/* const timer = setInterval(()=>{
   time--;
   count.textContent = time;
 
@@ -150,8 +253,7 @@ const timer = setInterval(()=>{
     clearInterval(timer);
     window.location.href = "index.html"; // 🔁 change to your home page
   }
-},1000);
-</script>
-
-</body>
+},1000); */
+</script> -->
+  </body>
 </html>
