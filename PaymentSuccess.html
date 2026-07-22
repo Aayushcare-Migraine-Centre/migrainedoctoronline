@@ -160,6 +160,7 @@
       };
 
       function startPolling() {
+        console.log("Polling started");
         setInterval(async () => {
           try {
             const res = await fetch(
@@ -183,7 +184,7 @@
           } catch (err) {
             console.error("Polling error:", err);
           }
-        }, 5000);
+        }, 3000);
       }
 
       function showSuccess() {
