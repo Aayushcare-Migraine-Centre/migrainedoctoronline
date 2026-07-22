@@ -30,11 +30,25 @@
       </div>
 
       <div class="section" id="newCustomerSection">
-        <label
+        <!-- <label
           >Name:
           <input type="text" id="newName" placeholder="Enter full name" />
           <div id="newName_error" class="error"></div
-        ></label>
+        ></label> -->
+
+        <div class="name-row">
+          <div class="half">
+            <label for="firstName">Name:</label>
+            <input type="text" id="firstName" placeholder="Enter first name" />
+            <div id="firstName_error" class="error"></div>
+          </div>
+
+          <div class="half">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" placeholder="Enter last name" />
+            <div id="lastName_error" class="error"></div>
+          </div>
+        </div>
 
         <label
           >Country:
@@ -43,7 +57,8 @@
           </select>
           <div id="newState_error" class="error"></div>
         </label>
-        <label id="stateWrapper" style="display:none">State:
+        <label id="stateWrapper" style="display: none"
+          >State:
           <select id="newState">
             <option value="">-- Select State --</option>
           </select>
@@ -648,13 +663,25 @@
                 phone: document.getElementById("newContact")?.value || "", //"9878766867",
                 email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
                 return_url: "https://api.migrainedoctoronline.com/verify-order",
-                udf1: "Ashique",
+                first_name: document.getElementById("firstName")?.value || "",
+                last_name: document.getElementById("lastName")?.value || "",
+                description:
+                  "Kindly complete the payment to book an appointment",
+                udf1: document.getElementById("newCountry")?.value || "",
+                udf3: document.getElementById("newState")?.value || "",
+                udf4: document.getElementById("newLanguage")?.value || "",
+                udf5: document.getElementById("newReferral")?.value || "",
+                udf6: document.getElementById("newDoctor")?.value || "",
+                udf7: document.getElementById("appointmentDate")?.value || "",
+                udf8:
+                  document.querySelector('input[name="modeNew"]:checked')
+                    ?.value || "",
               }),
             },
           );
 
           const data = await res.json();
-          console.log(data);
+          console.log("session data response", data);
 
           if (!res.ok) {
             alert("Something went wrong. Please try again.");
