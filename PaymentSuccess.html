@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Payment Successful</title>
+    <title>Payment Status</title>
 
     <style>
       :root {
@@ -11,6 +11,8 @@
         --bg: #f4f6fb;
         --text: #333;
         --success: #28a745;
+        --fail: #d9534f;
+        --pending: #f0ad4e;
       }
 
       body {
@@ -45,7 +47,7 @@
         color: #666;
       }
 
-      .home-btn {
+      .btn {
         display: inline-block;
         margin-top: 25px;
         padding: 12px 26px;
@@ -57,56 +59,43 @@
         transition: 0.3s;
       }
 
-      .home-btn:hover {
+      .btn:hover {
         background: #6a2c72;
       }
 
-      .timer {
-        margin-top: 15px;
+      /* Status Icons */
+      .status-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto;
+      }
+
+      /* Pending Loader Animation */
+      .loader {
+        border: 6px solid #eee;
+        border-top: 6px solid var(--pending);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        margin: auto;
+        animation: spin 1s linear infinite;
+      }
+
+      .order-box {
+        background: #f9f2fc;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-top: 10px;
         font-size: 14px;
-        color: #888;
+        color: #555;
+      }
+      .order-box strong {
+        color: var(--primary);
       }
 
-      /* ✅ Animated checkmark */
-      .checkmark-circle {
-        width: 90px;
-        height: 90px;
-        position: relative;
-        display: inline-block;
-      }
-
-      .checkmark-circle svg {
-        width: 90px;
-        height: 90px;
-      }
-
-      .circle {
-        stroke-dasharray: 283;
-        stroke-dashoffset: 283;
-        stroke-width: 6;
-        stroke: var(--success);
-        fill: none;
-        animation: drawCircle 0.6s forwards ease-out;
-      }
-
-      .check {
-        stroke-dasharray: 75;
-        stroke-dashoffset: 75;
-        stroke-width: 6;
-        stroke: var(--success);
-        fill: none;
-        animation: drawCheck 0.4s 0.6s forwards ease-out;
-      }
-
-      @keyframes drawCircle {
-        to {
-          stroke-dashoffset: 0;
-        }
-      }
-
-      @keyframes drawCheck {
-        to {
-          stroke-dashoffset: 0;
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
         }
       }
 
@@ -124,93 +113,50 @@
   </head>
 
   <body>
-    <!-- <div class="card">
-
-  <div class="checkmark-circle">
-    <svg viewBox="0 0 100 100">
-      <circle class="circle" cx="50" cy="50" r="45"/>
-      <polyline class="check" points="30,55 45,70 70,40"/>
-    </svg>
-  </div>
-
-  <h1>Payment Successful</h1>
-
-  <p>Your appointment booking payment has been completed successfully.</p>
-  <p>Our team will contact you shortly with confirmation details.</p>
-
-  <div class="timer">
-    Redirecting to home in <span id="count">5</span> seconds...
-  </div>
-
-  <a href="index.html" class="home-btn">Go to Home</a>
-
-</div> -->
-
     <div class="card">
-      <!-- Dynamic Icon -->
-      <div class="checkmark-circle" id="status-icon">
-        <!-- Default icon (will be replaced by JS) -->
-        <svg viewBox="0 0 100 100">
-          <circle class="circle" cx="50" cy="50" r="45" />
-          <polyline class="check" points="30,55 45,70 70,40" />
-        </svg>
-      </div>
+      <div id="icon-area"></div>
 
-      <h1 id="status-title">Payment Successful</h1>
+      <h1 id="status-title">Payment Status</h1>
 
-      <p id="status-message">
-        Your appointment booking payment has been completed successfully.
-      </p>
-      <p id="signature-message"></p>
+      <p id="status-message"></p>
       <p id="orderId-div"></p>
 
-      <div class="timer">
-        Redirecting to home in <span id="count">5</span> seconds...
-      </div>
-
-      <a href="index.html" class="home-btn">Go to Home</a>
+      <a id="action-btn" class="btn">Continue</a>
     </div>
 
     <script>
-      // Read URL parameters
       const params = new URLSearchParams(window.location.search);
       const orderId = params.get("order_id");
       const status = params.get("status");
-      const signatureMatch = params.get("signature_match");
 
-      // DOM elements
       const title = document.getElementById("status-title");
       const message = document.getElementById("status-message");
-      const signatureMsg = document.getElementById("signature-message");
       const orderDiv = document.getElementById("orderId-div");
-      const iconContainer = document.getElementById("status-icon");
+      const iconArea = document.getElementById("icon-area");
+      const actionBtn = document.getElementById("action-btn");
 
-      // Update signature message
-      signatureMsg.textContent = "Signature Verified: " + signatureMatch;
-      orderDiv.textContent = "Your Order ID is: " + orderId;
+      orderDiv.innerHTML = `
+  <div class="order-box">
+    <strong>Order ID:</strong> ${orderId}<br>
+    <small>Please keep this ID for future reference.</small>
+  </div>
+`;
 
-      // Dynamic icon SVGs
       const icons = {
         CHARGED: `
-      <svg viewBox="0 0 100 100">
-        <circle class="circle" cx="50" cy="50" r="45" stroke="#28a745"/>
-        <polyline class="check" points="30,55 45,70 70,40" stroke="#28a745"/>
-      </svg>
-    `,
+        <svg class="status-icon" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" stroke="#28a745" stroke-width="6" fill="none"/>
+          <polyline points="30,55 45,70 70,40" stroke="#28a745" stroke-width="6" fill="none"/>
+        </svg>
+      `,
         FAILED: `
-      <svg viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" stroke="#d9534f" stroke-width="6" fill="none"/>
-        <line x1="30" y1="30" x2="70" y2="70" stroke="#d9534f" stroke-width="6"/>
-        <line x1="70" y1="30" x2="30" y2="70" stroke="#d9534f" stroke-width="6"/>
-      </svg>
-    `,
-        PENDING: `
-      <svg viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" stroke="#f0ad4e" stroke-width="6" fill="none"/>
-        <line x1="50" y1="20" x2="50" y2="50" stroke="#f0ad4e" stroke-width="6"/>
-        <line x1="50" y1="50" x2="70" y2="60" stroke="#f0ad4e" stroke-width="6"/>
-      </svg>
-    `,
+        <svg class="status-icon" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" stroke="#d9534f" stroke-width="6" fill="none"/>
+          <line x1="30" y1="30" x2="70" y2="70" stroke="#d9534f" stroke-width="6"/>
+          <line x1="70" y1="30" x2="30" y2="70" stroke="#d9534f" stroke-width="6"/>
+        </svg>
+      `,
+        PENDING: `<div class="loader"></div>`,
       };
 
       function startPolling() {
@@ -224,76 +170,57 @@
             console.log("Polled status:", data.status);
 
             if (data.status === "CHARGED") {
-              title.textContent = "Payment Successful";
-              message.textContent =
-                "Your payment has been completed successfully.";
-              iconContainer.innerHTML = icons.CHARGED;
+              showSuccess();
             }
 
             if (
               data.status === "AUTHENTICATION_FAILED" ||
-              data.status == "AUTHORIZATION_FAILED"
+              data.status === "AUTHORIZATION_FAILED"
             ) {
-              title.textContent = "Payment Failed";
-              message.textContent =
-                "Your payment could not be completed. Please try again.";
-              iconContainer.innerHTML = icons.FAILED;
+              showFailure();
             }
           } catch (err) {
             console.error("Polling error:", err);
           }
-        }, 5000); // poll every 5 seconds
+        }, 5000);
       }
 
-      // Apply dynamic content based on status
-      if (status === "CHARGED") {
+      function showSuccess() {
+        iconArea.innerHTML = icons.CHARGED;
         title.textContent = "Payment Successful";
         message.textContent = "Your payment has been completed successfully.";
-        iconContainer.innerHTML = icons.CHARGED;
-      } else if (
-        status === "AUTHENTICATION_FAILED" ||
-        status == "AUTHORIZATION_FAILED"
-      ) {
+        actionBtn.textContent = "Go to Home";
+        actionBtn.href = "index.html";
+      }
+
+      function showFailure() {
+        iconArea.innerHTML = icons.FAILED;
         title.textContent = "Payment Failed";
         message.textContent =
           "Your payment could not be completed. Please try again.";
-        iconContainer.innerHTML = icons.FAILED;
-      } else if (status === "PENDING_VBV" || status == "AUTHORIZING") {
-        title.textContent = "Payment Pending";
-        message.textContent = "Your payment is still processing. Please wait.";
-        iconContainer.innerHTML = icons.PENDING;
+        actionBtn.textContent = "Book Appointment Again";
+        actionBtn.href = "appointment.html";
+      }
 
+      function showPending() {
+        iconArea.innerHTML = icons.PENDING;
+        title.textContent = "Processing Payment";
+        message.textContent = "Please wait while we confirm your transaction.";
+        actionBtn.style.display = "none"; // hide button during pending
         //startPolling();
       }
 
-      // Timer redirect
-      let time = 5;
-      const count = document.getElementById("count");
-
-      /* const timer = setInterval(() => {
-        time--;
-        count.textContent = time;
-
-        if (time === 0) {
-          clearInterval(timer);
-          window.location.href = "index.html";
-        }
-      }, 1000); */
+      // Initial status handling
+      if (status === "CHARGED") {
+        showSuccess();
+      } else if (
+        status === "AUTHENTICATION_FAILED" ||
+        status === "AUTHORIZATION_FAILED"
+      ) {
+        showFailure();
+      } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
+        showPending();
+      }
     </script>
-
-    <!-- <script>
-let time = 5;
-const count = document.getElementById("count");
-
-/* const timer = setInterval(()=>{
-  time--;
-  count.textContent = time;
-
-  if(time === 0){
-    clearInterval(timer);
-    window.location.href = "index.html"; // 🔁 change to your home page
-  }
-},1000); */
-</script> -->
   </body>
 </html>
