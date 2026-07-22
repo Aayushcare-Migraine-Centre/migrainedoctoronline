@@ -110,6 +110,8 @@ function validateContact(contact) {
 function validateForm() {
   const fields = [
     "newName",
+    "firstName",
+    "lastName",
     "newContact",
     "newEmail",
     "newCountry",
@@ -151,7 +153,7 @@ function validateForm() {
 
 //Event Listeners
 document.getElementById("newCountry").addEventListener("change", (e) => {
-console.log("e.target.value");
+  console.log("e.target.value");
   if (e.target.value == "India") {
     loadStates(e.target.value);
     document.getElementById("stateWrapper").style.display = "block";

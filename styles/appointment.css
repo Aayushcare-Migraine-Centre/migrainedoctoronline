@@ -71,6 +71,24 @@ h2 {
   margin-bottom: 12px;
 }
 
+.name-row {
+  display: flex !important;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.name-row .half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.name-row label {
+  display: block;
+  margin-bottom: 0px;
+}
+
 input[type="text"],
 input[type="tel"],
 input[type="email"],
