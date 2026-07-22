@@ -162,6 +162,7 @@
         Your appointment booking payment has been completed successfully.
       </p>
       <p id="signature-message"></p>
+      <p id="orderId-div"></p>
 
       <div class="timer">
         Redirecting to home in <span id="count">5</span> seconds...
@@ -181,10 +182,12 @@
       const title = document.getElementById("status-title");
       const message = document.getElementById("status-message");
       const signatureMsg = document.getElementById("signature-message");
+      const orderDiv = document.getElementById("orderId-div");
       const iconContainer = document.getElementById("status-icon");
 
       // Update signature message
       signatureMsg.textContent = "Signature Verified: " + signatureMatch;
+      orderDiv.textContent = "Your Order ID is: " + orderId;
 
       // Dynamic icon SVGs
       const icons = {
