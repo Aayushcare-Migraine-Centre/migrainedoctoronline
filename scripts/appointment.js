@@ -50,12 +50,14 @@ async function loadCountries() {
       opt.textContent = state.name;
       opt.dataset.phoneCode = state.custom_phone_code;
 
+      //India made as the default selection
       if (state.name === "India") {
         opt.selected = true;
       }
 
       countrySelect.appendChild(opt);
     });
+    //Triggering the state and country code selection manually
     countrySelect.dispatchEvent(new Event("change"));
   } catch (err) {
     spinner.remove();
