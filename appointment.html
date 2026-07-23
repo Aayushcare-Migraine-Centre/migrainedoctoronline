@@ -66,10 +66,14 @@
 
         <label
           >Contact No:
-          <input
-            type="tel"
-            id="newContact"
-            placeholder="Enter contact number" />
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span id="phoneCode"></span>
+            <input
+              type="tel"
+              id="newContact"
+              placeholder="Enter contact number"
+            />
+          </div>
           <div id="newContact_error" class="error"></div
         ></label>
 
