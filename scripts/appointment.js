@@ -49,8 +49,14 @@ async function loadCountries() {
       //opt.value = state.code;
       opt.textContent = state.name;
       opt.dataset.phoneCode = state.custom_phone_code;
+
+      if (state.name === "India") {
+        opt.selected = true;
+      }
+
       countrySelect.appendChild(opt);
     });
+    countrySelect.dispatchEvent(new Event("change"));
   } catch (err) {
     spinner.remove();
     showError("newCountry", "Failed to load countries");
@@ -153,7 +159,7 @@ function validateForm() {
 }); */
 
 function normalizePhoneCode(code) {
-  if (!code) return "";
+  if (!code) return "--";
 
   // If code already starts with +, return as-is
   if (code.startsWith("+")) {
@@ -183,7 +189,7 @@ document.getElementById("newCountry").addEventListener("change", (e) => {
       selectedOption.dataset.phoneCode,
     );
   } else {
-    phoneCodeSpan.textContent = "";
+    phoneCodeSpan.textContent = "--";
   }
 });
 
