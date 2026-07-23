@@ -48,6 +48,7 @@ async function loadCountries() {
       const opt = document.createElement("option");
       //opt.value = state.code;
       opt.textContent = state.name;
+      opt.dataset.phoneCode = state.custom_phone_code;
       countrySelect.appendChild(opt);
     });
   } catch (err) {
@@ -56,7 +57,7 @@ async function loadCountries() {
   }
 }
 
-//Load Districts with Spinner
+//Load State with Spinner
 async function loadStates(countryCode) {
   const stateSelect = document.getElementById("newState");
   const selectedCountry = document.getElementById("newCountry").value;
@@ -151,14 +152,38 @@ function validateForm() {
   if (validateForm()) showReview();
 }); */
 
+function normalizePhoneCode(code) {
+  if (!code) return "";
+
+  // If code already starts with +, return as-is
+  if (code.startsWith("+")) {
+    return code;
+  }
+
+  // Otherwise prepend +
+  return `+${code}`;
+}
+
 //Event Listeners
 document.getElementById("newCountry").addEventListener("change", (e) => {
-  console.log("e.target.value");
+  console.log(e.target.options[1].dataset.phoneCode);
   if (e.target.value == "India") {
     loadStates(e.target.value);
     document.getElementById("stateWrapper").style.display = "block";
   } else {
     document.getElementById("stateWrapper").style.display = "none";
+  }
+
+  // Update phone code
+  const selectedOption = e.target.options[e.target.selectedIndex];
+  const phoneCodeSpan = document.getElementById("phoneCode");
+
+  if (selectedOption.dataset.phoneCode) {
+    phoneCodeSpan.textContent = normalizePhoneCode(
+      selectedOption.dataset.phoneCode,
+    );
+  } else {
+    phoneCodeSpan.textContent = "";
   }
 });
 
