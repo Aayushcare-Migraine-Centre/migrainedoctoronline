@@ -104,6 +104,23 @@ select {
   transition: 0.3s;
 }
 
+.phone-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phone-badge {
+  background: #f0f4ff;
+  color: #2a4d9b;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid #d0d8f0;
+  min-width: 55px;
+  text-align: center;
+}
 
 label {
   display: block;
