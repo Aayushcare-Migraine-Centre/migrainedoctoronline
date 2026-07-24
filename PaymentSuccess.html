@@ -197,22 +197,22 @@
       }
 
       function showSuccess() {
+        actionBtn.style.display = "inline-block";
         iconArea.innerHTML = icons.CHARGED;
         title.textContent = "Payment Successful";
         message.textContent = "Your payment has been completed successfully.";
         actionBtn.textContent = "Go to Home";
         actionBtn.href = "index.html";
-        actionBtn.style.display = "inline-block";
       }
 
       function showFailure() {
+        actionBtn.style.display = "inline-block";
         iconArea.innerHTML = icons.FAILED;
         title.textContent = "Payment Failed";
         message.textContent =
           "Your payment could not be completed. Please try again.";
         actionBtn.textContent = "Book Appointment Again";
         actionBtn.href = "appointment.html";
-        actionBtn.style.display = "inline-block";
       }
 
       function showPending() {
