@@ -165,7 +165,7 @@
         pollInterval = setInterval(async () => {
           try {
             const res = await fetch(
-              `https://api.migrainedoctoronline.com/order-status?order_id=${orderId}`,
+              `https://api.migrainedoctoronline.com/order-status`,
               {
                 method:"POST",
                 body:JSON.stringify({
