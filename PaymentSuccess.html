@@ -174,8 +174,7 @@
             );
             const data = await res.json();
 
-            console.log("Polled status:", data.status,data);
-            console.log("Polled data:", data);
+            console.log("Polled status:", data);
 
             if (data.status === "CHARGED") {
               showSuccess();
