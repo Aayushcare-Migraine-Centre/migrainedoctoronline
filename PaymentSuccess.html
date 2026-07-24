@@ -159,9 +159,10 @@
         PENDING: `<div class="loader"></div>`,
       };
 
+      let pollInterval = null;
       function startPolling() {
         console.log("Polling started");
-        setInterval(async () => {
+        pollInterval = setInterval(async () => {
           try {
             const res = await fetch(
               `https://api.migrainedoctoronline.com/order-status?order_id=${orderId}`,
@@ -176,7 +177,8 @@
 
             console.log("Polled status:", data);
 
-            if (data.status === "CHARGED") {
+            if (data.status === "CHARGED" || data.status=="NEW") {
+              clearInterval(pollInterval);
               showSuccess();
             }
 
@@ -185,6 +187,7 @@
               data.status === "AUTHORIZATION_FAILED" ||
               data.status == "JUSPAY_DECLINED"
             ) {
+              clearInterval(pollInterval);
               showFailure();
             }
           } catch (err) {
