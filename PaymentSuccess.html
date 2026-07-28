@@ -198,6 +198,33 @@
         }, 3000);
       }
 
+      async function retryPayment() {
+        try {
+          const res = await fetch(
+            "https://api.migrainedoctoronline.com/retry-order",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                order_id: "F86FEAFEFE6FA0932848",
+              }),
+            },
+          );
+          const data = await res.json();
+          console.log("session data response from payment page", data);
+
+          if (!res.ok) {
+            alert("Something went wrong. Please try again.");
+            return;
+          }
+
+          //Redirecting user to HDFC payment page
+          window.location.href = data.payment_links.web;
+        } catch (err) {
+          console.log("err", err);
+        }
+      }
+
       function showSuccess() {
         actionBtn.style.display = "inline-block";
         iconArea.innerHTML = icons.CHARGED;
@@ -205,6 +232,7 @@
         message.textContent = "Your payment has been completed successfully.";
         actionBtn.textContent = "Go to Home";
         actionBtn.href = "index.html";
+        actionBtn.onclick = null;
       }
 
       function showFailure() {
@@ -213,8 +241,9 @@
         title.textContent = "Payment Failed";
         message.textContent =
           "Your payment could not be completed. Please try again.";
-        actionBtn.textContent = "Book Appointment Again";
-        actionBtn.href = "appointment.html";
+        actionBtn.textContent = "Retry Payment";
+        actionBtn.removeAttribute("href");
+        actionBtn.onclick = retryPayment;
       }
 
       function showPending() {
