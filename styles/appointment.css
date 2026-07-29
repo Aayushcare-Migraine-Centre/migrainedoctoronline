@@ -277,7 +277,7 @@ button {
 
 /* Error message */
 .error {
-  color: var(--error-color);
+  color: #d32f2f;
   font-size: 13px;
   margin-top: 4px;
 }
