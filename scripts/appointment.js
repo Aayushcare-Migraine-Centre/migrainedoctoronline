@@ -112,7 +112,9 @@ function validateEmail(email) {
 
 //Contact Validation
 function validateContact(contact) {
-  return /^[0-9]{10}$/.test(contact);
+  //return /^[0-9]{10}$/.test(contact);
+  const digits = contact.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 15;
 }
 
 //Mandatory Fields + Error Messages
@@ -149,7 +151,7 @@ function validateForm() {
   }
 
   if (!validateContact(newContact.value)) {
-    showError("newContact", "Contact number must be 10 digits");
+    showError("newContact", "Please enter a valid contact number");
     valid = false;
   }
 
