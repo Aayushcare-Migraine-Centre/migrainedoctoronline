@@ -233,6 +233,30 @@ document.querySelectorAll('input[name="modeNew"]').forEach(radio => {
   });
 });
 
+// Auto-clear errors fields
+const mandatoryFields = [
+  "firstName",
+  "lastName",
+  "newContact",
+  "newEmail",
+  "newCountry",
+  "newState",
+  "newLanguage",
+  "newReferral",
+  "newDoctor",
+  "appointmentDate"
+];
+
+mandatoryFields.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const eventType = el.tagName === "SELECT" ? "change" : "input";
+
+  el.addEventListener(eventType, () => {
+    clearError(id);
+  });
+});
 
 //Load States on Page Load
 loadCountries();
