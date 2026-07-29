@@ -653,35 +653,38 @@
           return;
         }
 
-        document.getElementById("premiumOverlay").style.display = "flex";
+        //document.getElementById("premiumOverlay").style.display = "flex";
+        let orderBody = {
+          amount: currentAmount.toFixed(2), //"129.15",
+          customer_id: "",
+          currency: "INR",
+          phone:
+            document.getElementById("phoneCode")?.textContent +
+            (document.getElementById("newContact")?.value || ""), //"9878766867",
+          email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
+          return_url: "https://api.migrainedoctoronline.com/verify-order",
+          first_name: document.getElementById("firstName")?.value || "",
+          last_name: document.getElementById("lastName")?.value || "",
+          description: "Kindly complete the payment to book an appointment",
+          udf1: document.getElementById("newCountry")?.value || "",
+          udf3: document.getElementById("newState")?.value || "",
+          udf4: document.getElementById("newLanguage")?.value || "",
+          udf5: document.getElementById("newReferral")?.value || "",
+          udf6: document.getElementById("newDoctor")?.value || "",
+          udf7: document.getElementById("appointmentDate")?.value || "",
+          udf8:
+            document.querySelector('input[name="modeNew"]:checked')?.value ||
+            "",
+        };
 
-        try {
+        console.log("orderBody is", orderBody);
+        /* try {
           const res = await fetch(
             "https://api.migrainedoctoronline.com/create-order",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                amount: currentAmount.toFixed(2), //"129.15",
-                customer_id: "",
-                currency: "INR",
-                phone: document.getElementById("newContact")?.value || "", //"9878766867",
-                email: document.getElementById("newEmail")?.value || "", //"hello1@gmail.com",
-                return_url: "https://api.migrainedoctoronline.com/verify-order",
-                first_name: document.getElementById("firstName")?.value || "",
-                last_name: document.getElementById("lastName")?.value || "",
-                description:
-                  "Kindly complete the payment to book an appointment",
-                udf1: document.getElementById("newCountry")?.value || "",
-                udf3: document.getElementById("newState")?.value || "",
-                udf4: document.getElementById("newLanguage")?.value || "",
-                udf5: document.getElementById("newReferral")?.value || "",
-                udf6: document.getElementById("newDoctor")?.value || "",
-                udf7: document.getElementById("appointmentDate")?.value || "",
-                udf8:
-                  document.querySelector('input[name="modeNew"]:checked')
-                    ?.value || "",
-              }),
+              body: JSON.stringify(orderBody),
             },
           );
 
@@ -699,7 +702,7 @@
           console.log(err);
           alert("Network error. Please try again.");
           document.getElementById("premiumOverlay").style.display = "none";
-        }
+        } */
       });
 
       /* init */
