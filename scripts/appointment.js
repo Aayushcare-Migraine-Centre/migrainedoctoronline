@@ -46,7 +46,7 @@ async function loadCountries() {
 
     data.data.forEach((state) => {
       const opt = document.createElement("option");
-      //opt.value = state.code;
+      opt.value = state.name;
       opt.textContent = state.name;
       opt.dataset.phoneCode = state.custom_phone_code;
 
@@ -132,11 +132,21 @@ function validateForm() {
     "appointmentDate",
   ];
 
+  console.log("countryValue",document.getElementById("newCountry").value.trim());
+
   let valid = true;
 
   fields.forEach((id) => {
     const el = document.getElementById(id);
     clearError(id);
+
+    if (!el) return;
+
+    //State is required ONLY for India
+    if (id === "newState") {
+      const country = document.getElementById("newCountry").value;
+      if (country !== "India") return; // skip validation for states
+    }
 
     if (!el.value.trim()) {
       showError(id, "This field is required");
@@ -175,7 +185,6 @@ function normalizePhoneCode(code) {
 
 //Event Listeners
 document.getElementById("newCountry").addEventListener("change", (e) => {
-  console.log(e.target.options[1].dataset.phoneCode);
   if (e.target.value == "India") {
     loadStates(e.target.value);
     document.getElementById("stateWrapper").style.display = "block";
@@ -208,9 +217,9 @@ newContact.addEventListener("blur", () => {
     showError("newContact", "Contact number must be 10 digits");
 });
 
-appointmentDate.addEventListener("click",()=>{
+appointmentDate.addEventListener("click", () => {
   appointmentDate.showPicker();
-})
+});
 
 //Load States on Page Load
 loadCountries();
