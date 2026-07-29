@@ -653,6 +653,11 @@
           return;
         }
 
+        if(!validateForm()){
+          alert("Please fill all the fields");
+          return;
+        }
+
         //document.getElementById("premiumOverlay").style.display = "flex";
         let orderBody = {
           amount: currentAmount.toFixed(2), //"129.15",

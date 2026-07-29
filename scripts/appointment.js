@@ -120,7 +120,6 @@ function validateContact(contact) {
 //Mandatory Fields + Error Messages
 function validateForm() {
   const fields = [
-    "newName",
     "firstName",
     "lastName",
     "newContact",
