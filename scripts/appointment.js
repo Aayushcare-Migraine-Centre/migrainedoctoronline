@@ -209,5 +209,9 @@ newContact.addEventListener("blur", () => {
     showError("newContact", "Contact number must be 10 digits");
 });
 
+appointmentDate.addEventListener("click",()=>{
+  appointmentDate.showPicker();
+})
+
 //Load States on Page Load
 loadCountries();
