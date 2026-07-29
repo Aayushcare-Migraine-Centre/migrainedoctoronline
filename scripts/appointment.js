@@ -132,8 +132,6 @@ function validateForm() {
     "appointmentDate",
   ];
 
-  console.log("countryValue",document.getElementById("newCountry").value.trim());
-
   let valid = true;
 
   fields.forEach((id) => {
@@ -153,6 +151,13 @@ function validateForm() {
       valid = false;
     }
   });
+
+  const modeSelected = document.querySelector('input[name="modeNew"]:checked');
+
+  if (!modeSelected) {
+    showError("modeNew", "Please select mode of appointment");
+    valid = false;
+  }
 
   if (!validateEmail(newEmail.value)) {
     showError("newEmail", "Invalid email format");
@@ -220,6 +225,14 @@ newContact.addEventListener("blur", () => {
 appointmentDate.addEventListener("click", () => {
   appointmentDate.showPicker();
 });
+
+// Clear mode error when user selects Online/Offline
+document.querySelectorAll('input[name="modeNew"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    clearError("modeNew");
+  });
+});
+
 
 //Load States on Page Load
 loadCountries();
