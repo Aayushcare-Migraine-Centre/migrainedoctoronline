@@ -122,6 +122,14 @@
       <p id="orderId-div"></p>
 
       <a id="action-btn" class="btn">Continue</a>
+      <p id="home-link" style="display: none; margin-top: 15px">
+        <a
+          href="index.html"
+          style="color: #83358f; font-weight: 600; text-decoration: none"
+        >
+          Go to Home
+        </a>
+      </p>
     </div>
 
     <script>
@@ -240,6 +248,7 @@
         actionBtn.textContent = "Go to Home";
         actionBtn.href = "index.html";
         actionBtn.onclick = null;
+        document.getElementById("home-link").style.display = "none";
       }
 
       function showSuccess() {
@@ -250,6 +259,7 @@
         actionBtn.textContent = "Go to Home";
         actionBtn.href = "index.html";
         actionBtn.onclick = null;
+        document.getElementById("home-link").style.display = "none";
       }
 
       function showFailure() {
@@ -261,9 +271,11 @@
         actionBtn.textContent = "Retry Payment";
         actionBtn.removeAttribute("href");
         actionBtn.onclick = retryPayment;
+        document.getElementById("home-link").style.display = "block";
       }
 
       function showPending() {
+        document.getElementById("home-link").style.display = "none";
         iconArea.innerHTML = icons.PENDING;
         title.textContent = "Processing Payment";
         message.textContent = "Please wait while we confirm your transaction.";
