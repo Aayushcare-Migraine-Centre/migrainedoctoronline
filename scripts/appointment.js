@@ -258,5 +258,9 @@ mandatoryFields.forEach(id => {
   });
 });
 
+function goHome(){
+  window.location.href="./";
+}
+
 //Load States on Page Load
 loadCountries();
