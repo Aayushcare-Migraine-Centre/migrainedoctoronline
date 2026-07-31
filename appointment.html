@@ -655,7 +655,7 @@
           return;
         }
 
-        if(!validateForm()){
+        if (!validateForm()) {
           alert("Please fill all the fields");
           return;
         }
@@ -685,7 +685,7 @@
         };
 
         console.log("orderBody is", orderBody);
-        /* try {
+        try {
           const res = await fetch(
             "https://api.migrainedoctoronline.com/create-order",
             {
@@ -709,7 +709,7 @@
           console.log(err);
           alert("Network error. Please try again.");
           document.getElementById("premiumOverlay").style.display = "none";
-        } */
+        }
       });
 
       /* init */
