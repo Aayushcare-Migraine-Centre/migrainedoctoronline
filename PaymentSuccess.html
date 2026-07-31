@@ -206,7 +206,7 @@
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                order_id: "F86FEAFEFE6FA0932848",
+                order_id: orderId,
               }),
             },
           );
@@ -260,7 +260,8 @@
       } else if (
         status === "AUTHENTICATION_FAILED" ||
         status === "AUTHORIZATION_FAILED" ||
-        status === "JUSPAY_DECLINED"
+        status === "JUSPAY_DECLINED" ||
+        status === "NEW"
       ) {
         showFailure();
       } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
