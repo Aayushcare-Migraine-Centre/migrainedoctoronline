@@ -128,6 +128,7 @@
       const params = new URLSearchParams(window.location.search);
       const orderId = params.get("order_id");
       const status = params.get("status");
+      const signatureMatch = params.get("signature_match");
 
       const title = document.getElementById("status-title");
       const message = document.getElementById("status-message");
@@ -225,6 +226,22 @@
         }
       }
 
+      function showTampered() {
+        actionBtn.style.display = "inline-block";
+        iconArea.innerHTML = icons.FAILED;
+        title.textContent = "Payment Tampered";
+        message.innerHTML = `
+    The payment details received from the bank do not match our records.<br><br>
+    This usually indicates tampering or incorrect parameters.<br><br>
+    Please contact our clinic immediately so we can verify the transaction with the bank:<br><br>
+    <strong>Email:</strong> dralex@aayushcare.com<br>
+    <strong>Phone:</strong> +91 7510289534
+  `;
+        actionBtn.textContent = "Go to Home";
+        actionBtn.href = "index.html";
+        actionBtn.onclick = null;
+      }
+
       function showSuccess() {
         actionBtn.style.display = "inline-block";
         iconArea.innerHTML = icons.CHARGED;
@@ -255,17 +272,21 @@
       }
 
       // Initial status handling
-      if (status === "CHARGED") {
-        showSuccess();
-      } else if (
-        status === "AUTHENTICATION_FAILED" ||
-        status === "AUTHORIZATION_FAILED" ||
-        status === "JUSPAY_DECLINED" ||
-        status === "NEW"
-      ) {
-        showFailure();
-      } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
-        showPending();
+      if (signatureMatch == "false") {
+        showTampered();
+      } else {
+        if (status === "CHARGED") {
+          showSuccess();
+        } else if (
+          status === "AUTHENTICATION_FAILED" ||
+          status === "AUTHORIZATION_FAILED" ||
+          status === "JUSPAY_DECLINED" ||
+          status === "NEW"
+        ) {
+          showFailure();
+        } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
+          showPending();
+        }
       }
     </script>
   </body>
