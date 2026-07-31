@@ -39,7 +39,7 @@
 
         <div class="name-row">
           <div class="half">
-            <label for="firstName">Name:</label>
+            <label for="firstName"> First Name:</label>
             <input type="text" id="firstName" placeholder="Enter first name" />
             <div id="firstName_error" class="error"></div>
           </div>
@@ -683,7 +683,11 @@
           udf8:
             document.querySelector('input[name="modeNew"]:checked')?.value ||
             "",
+            udf9:selectedSlot.label,
+            customer_phone_country_code:document.getElementById("phoneCode")?.textContent
         };
+
+        //showReviewDetails(orderBody);
 
         //console.log("orderBody is", orderBody);
         try {
@@ -701,6 +705,7 @@
 
           if (!res.ok) {
             alert("Something went wrong. Please try again.");
+            document.getElementById("premiumOverlay").style.display = "none";
             return;
           }
 
@@ -712,6 +717,35 @@
           document.getElementById("premiumOverlay").style.display = "none";
         }
       });
+
+      /* async function proceedToPayment(orderBody){
+        try {
+          const res = await fetch(
+            "https://api.migrainedoctoronline.com/create-order",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(orderBody),
+            },
+          );
+
+          const data = await res.json();
+          //console.log("session data response", data);
+
+          if (!res.ok) {
+            alert("Something went wrong. Please try again.");
+            document.getElementById("premiumOverlay").style.display = "none";
+            return;
+          }
+
+          //Redirecting user to HDFC payment page
+          window.location.href = data.payment_links.web;
+        } catch (err) {
+         // console.log(err);
+          alert("Network error. Please try again.");
+          document.getElementById("premiumOverlay").style.display = "none";
+        }
+      } */
 
       /* init */
       document.addEventListener("DOMContentLoaded", () => {

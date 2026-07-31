@@ -227,7 +227,7 @@ appointmentDate.addEventListener("click", () => {
 });
 
 // Clear mode error when user selects Online/Offline
-document.querySelectorAll('input[name="modeNew"]').forEach(radio => {
+document.querySelectorAll('input[name="modeNew"]').forEach((radio) => {
   radio.addEventListener("change", () => {
     clearError("modeNew");
   });
@@ -244,10 +244,10 @@ const mandatoryFields = [
   "newLanguage",
   "newReferral",
   "newDoctor",
-  "appointmentDate"
+  "appointmentDate",
 ];
 
-mandatoryFields.forEach(id => {
+mandatoryFields.forEach((id) => {
   const el = document.getElementById(id);
   if (!el) return;
 
@@ -258,8 +258,73 @@ mandatoryFields.forEach(id => {
   });
 });
 
-function goHome(){
-  window.location.href="./";
+function goHome() {
+  window.location.href = "./";
+}
+
+function showReviewDetails(orderBody) {
+  const reviewSection = document.getElementById("reviewSection");
+  reviewSection.classList.remove("hidden");
+  //document.getElementById("payButton").style.display = "none";
+  document.getElementById("newCustomerSection").classList.add("hidden");
+
+  const stateRow =
+    orderBody.udf1 === "India"
+      ? `
+        <tr>
+          <td><strong>State</strong></td>
+          <td>${orderBody.udf3 || "N/A"}</td>
+        </tr>
+      `
+      : "";
+
+  reviewSection.innerHTML = `
+    <div class="review-box">
+      <h3>Review Your Appointment Details</h3>
+
+      <table class="review-table">
+        <tr><td><strong>Name</strong></td><td>${orderBody.first_name} ${orderBody.last_name}</td></tr>
+        <tr><td><strong>Contact</strong></td><td>${orderBody.phone}</td></tr>
+        <tr><td><strong>Email</strong></td><td>${orderBody.email}</td></tr>
+        <tr><td><strong>Country</strong></td><td>${orderBody.udf1}</td></tr>
+        ${stateRow}
+        <tr><td><strong>Preferred Language</strong></td><td>${orderBody.udf4}</td></tr>
+        <tr><td><strong>Referral</strong></td><td>${orderBody.udf5}</td></tr>
+        <tr><td><strong>Doctor</strong></td><td>${orderBody.udf6}</td></tr>
+
+        <tr class="highlight-row"><td><strong>Appointment Date</strong></td><td>${orderBody.udf7}</td></tr>
+        <tr class="highlight-row"><td><strong>Time Slot</strong></td><td>${orderBody.udf9}</td></tr>
+
+        <tr><td><strong>Mode</strong></td><td>${orderBody.udf8}</td></tr>
+      </table>
+
+      <div class="review-actions">
+      <button id="backToEditBtn" class="back-btn">Back to Edit Details</button>
+      <button id="confirmPaymentBtn" class="confirm-btn">Confirm & Proceed to Payment</button>
+    </div>
+    </div>
+  `;
+
+  document.getElementById("confirmPaymentBtn").addEventListener("click", () => {
+    document.getElementById("premiumOverlay").style.display = "flex";
+    proceedToPayment(orderBody);
+  });
+
+  document.getElementById("backToEditBtn").addEventListener("click", () => {
+    const reviewSection = document.getElementById("reviewSection");
+
+    // Hide review box
+    reviewSection.classList.add("hidden");
+
+    //Show review button
+    //document.getElementById("payButton").style.display = "";
+    document.getElementById("newCustomerSection").classList.remove("hidden");
+
+    // Smooth scroll back to the form
+    /* document.getElementById("newCustomerSection")?.scrollIntoView({
+      behavior: "smooth",
+    }); */
+  });
 }
 
 //Load States on Page Load
