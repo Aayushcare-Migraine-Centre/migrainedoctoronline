@@ -660,7 +660,7 @@
           return;
         }
 
-        //document.getElementById("premiumOverlay").style.display = "flex";
+        document.getElementById("premiumOverlay").style.display = "flex";
         let orderBody = {
           amount: currentAmount.toFixed(2), //"129.15",
           customer_id: "",
@@ -684,7 +684,7 @@
             "",
         };
 
-        console.log("orderBody is", orderBody);
+        //console.log("orderBody is", orderBody);
         try {
           const res = await fetch(
             "https://api.migrainedoctoronline.com/create-order",
@@ -696,7 +696,7 @@
           );
 
           const data = await res.json();
-          console.log("session data response", data);
+          //console.log("session data response", data);
 
           if (!res.ok) {
             alert("Something went wrong. Please try again.");
@@ -706,7 +706,7 @@
           //Redirecting user to HDFC payment page
           window.location.href = data.payment_links.web;
         } catch (err) {
-          console.log(err);
+         // console.log(err);
           alert("Network error. Please try again.");
           document.getElementById("premiumOverlay").style.display = "none";
         }

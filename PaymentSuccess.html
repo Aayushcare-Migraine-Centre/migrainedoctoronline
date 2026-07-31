@@ -161,7 +161,7 @@
 
       let pollInterval = null;
       function startPolling() {
-        console.log("Polling started");
+        //console.log("Polling started");
         pollInterval = setInterval(async () => {
           try {
             const res = await fetch(
@@ -175,7 +175,7 @@
             );
             const data = await res.json();
 
-            console.log("Polled status:", data);
+            //console.log("Polled status:", data);
 
             if (data.status === "CHARGED") {
               clearInterval(pollInterval);
@@ -211,7 +211,7 @@
             },
           );
           const data = await res.json();
-          console.log("session data response from payment page", data);
+          //console.log("session data response from payment page", data);
 
           if (!res.ok) {
             alert("Something went wrong. Please try again.");
