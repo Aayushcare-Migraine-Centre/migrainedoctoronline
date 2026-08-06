@@ -284,7 +284,7 @@
       }
 
       // Initial status handling
-      if (signatureMatch == "false") {
+      if (signatureMatch == "false"&&status!=="NEW") {
         showTampered();
       } else {
         if (status === "CHARGED") {
