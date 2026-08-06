@@ -238,8 +238,7 @@
         actionBtn.style.display = "inline-block";
         iconArea.innerHTML = icons.FAILED;
         title.textContent = "Amount Tampered";
-        message.textContent =
-          "Amount validation failed. Please try again.";
+        message.textContent = "Amount validation failed. Please try again.";
         actionBtn.textContent = "Retry Payment";
         actionBtn.removeAttribute("href");
         actionBtn.onclick = retryPayment;
@@ -296,7 +295,7 @@
       }
 
       // Initial status handling
-      if (signatureMatch == "false"&&status!=="NEW") {
+      if (signatureMatch == "false" && status !== "NEW") {
         showTampered();
       } else {
         if (status === "CHARGED") {
@@ -310,7 +309,7 @@
           showFailure();
         } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
           showPending();
-        }else if(status=="TAMPERED"){
+        } else if (status === "TAMPERED") {
           showAmountTampered();
         }
       }
