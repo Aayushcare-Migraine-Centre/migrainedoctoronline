@@ -234,6 +234,18 @@
         }
       }
 
+      function showAmountTampered() {
+        actionBtn.style.display = "inline-block";
+        iconArea.innerHTML = icons.FAILED;
+        title.textContent = "Amount Tampered";
+        message.textContent =
+          "Amount validation failed. Please try again.";
+        actionBtn.textContent = "Retry Payment";
+        actionBtn.removeAttribute("href");
+        actionBtn.onclick = retryPayment;
+        document.getElementById("home-link").style.display = "block";
+      }
+
       function showTampered() {
         actionBtn.style.display = "inline-block";
         iconArea.innerHTML = icons.FAILED;
@@ -298,6 +310,8 @@
           showFailure();
         } else if (status === "PENDING_VBV" || status === "AUTHORIZING") {
           showPending();
+        }else if(status=="TAMPERED"){
+          showAmountTampered();
         }
       }
     </script>
