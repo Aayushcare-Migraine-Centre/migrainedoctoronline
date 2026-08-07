@@ -295,8 +295,12 @@
       }
 
       // Initial status handling
-      if (signatureMatch == "false" && status !== "NEW") {
-        showTampered();
+      if (signatureMatch == "false") {
+        if (status === "NEW") {
+          showFailure();
+        } else {
+          showTampered();
+        }
       } else {
         if (status === "CHARGED") {
           showSuccess();
