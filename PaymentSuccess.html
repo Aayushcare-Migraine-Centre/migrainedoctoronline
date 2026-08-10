@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/payspinner.css" />
     <title>Payment Status</title>
 
     <style>
@@ -208,6 +209,7 @@
       }
 
       async function retryPayment() {
+        document.getElementById("premiumOverlay").style.display = "flex";
         try {
           const res = await fetch(
             "https://api.migrainedoctoronline.com/retry-order",
@@ -220,10 +222,11 @@
             },
           );
           const data = await res.json();
-          //console.log("session data response from payment page", data);
+          console.log("session data response from payment page", data);
 
           if (!res.ok) {
             alert("Something went wrong. Please try again.");
+            document.getElementById("premiumOverlay").style.display = "none";
             return;
           }
 
@@ -231,6 +234,7 @@
           window.location.href = data.payment_links.web;
         } catch (err) {
           console.log("err", err);
+          document.getElementById("premiumOverlay").style.display = "none";
         }
       }
 
@@ -318,5 +322,13 @@
         }
       }
     </script>
+
+    <!-- Spinner Overlay -->
+    <div id="premiumOverlay" class="premium-overlay" style="display: none">
+      <div class="premium-loader-box">
+        <div class="premium-spinner"></div>
+        <div class="premium-text">Securely connecting to payment gateway…</div>
+      </div>
+    </div>
   </body>
 </html>
