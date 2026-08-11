@@ -663,7 +663,7 @@
 
         document.getElementById("premiumOverlay").style.display = "flex";
         let orderBody = {
-          amount: currentAmount.toFixed(2), //"129.15",
+          amount: currentAmount.toFixed(2),//"25.00", //"129.15",
           customer_id: "",
           currency: "INR",
           phone:
@@ -683,8 +683,9 @@
           udf8:
             document.querySelector('input[name="modeNew"]:checked')?.value ||
             "",
-            udf9:selectedSlot.label,
-            customer_phone_country_code:document.getElementById("phoneCode")?.textContent
+          udf9: selectedSlot.label,
+          customer_phone_country_code:
+            document.getElementById("phoneCode")?.textContent,
         };
 
         //showReviewDetails(orderBody);
@@ -700,19 +701,49 @@
             },
           );
 
-          const data = await res.json();
-          //console.log("session data response", data);
+          const raw = await res.text();
 
-          if (!res.ok) {
+          let parsed;
+
+          // Try normal JSON first
+          try {
+            parsed = JSON.parse(raw);
+          } catch {
+            console.log("Outer JSON failed, trying inner JSON");
+          }
+
+          // If backend returned Lambda-style response
+          if (parsed.redirect_url) {
+            window.location.href = parsed.redirect_url;
+            return;
+          }
+
+          // Normal flow (HDFC payment)
+          if (parsed.payment_links?.web) {
+            window.location.href = parsed.payment_links.web;
+            return;
+          }
+
+          alert("Unexpected response format");
+
+          /*Non-HDFC response*/
+          /* const data = await res.text();
+          console.log(data);
+          window.location.href = JSON.parse(data).redirect_url; */
+          /*End of non-HDFC response*/
+
+          /*HDFC response*/
+          /* if (!res.ok) {
             alert("Something went wrong. Please try again.");
             document.getElementById("premiumOverlay").style.display = "none";
             return;
           }
 
           //Redirecting user to HDFC payment page
-          window.location.href = data.payment_links.web;
+          window.location.href = data.payment_links.web; */
+          /*End of HDFC response*/
         } catch (err) {
-         // console.log(err);
+          console.log("error is", err);
           alert("Network error. Please try again.");
           document.getElementById("premiumOverlay").style.display = "none";
         }
