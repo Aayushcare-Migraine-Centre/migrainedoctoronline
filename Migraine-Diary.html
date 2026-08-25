@@ -610,17 +610,18 @@
                         </div>
 <!-- Q3: Painkillers -->
 <div class="field">
-  <label for="painkiller">Taken Painkillers?</label>
+  <label for="painkiller">Taken Any Painkiller Tabs?</label>
   <select id="painkiller" required>
     <option value="">Select</option>
     <option value="Yes">Yes</option>
     <option value="No">No</option>
+    <option value="Injection">Injection</option>
   </select>
 </div>
 
 <!-- Painkiller Details -->
 <div class="field" id="painkillerDetailsField" style="display:none;">
-  <label for="painkillerDetails">Painkiller Details</label>
+  <label for="painkillerDetails">Painkiller / Injection Details</label>
   <input
     type="text"
     id="painkillerDetails"
@@ -926,12 +927,13 @@ allEntries[entry.date] = {
 
 
               painkiller.addEventListener('change',()=>{
-                if(painkiller.value==="Yes"){
+                if(painkiller.value==="Yes" || painkiller.value === "Injection"){
                   painkillerDetailsField.style.display="block";
                   painkillerDetails.required=true;
                 } else {
                   painkillerDetailsField.style.display="none";
                   painkillerDetails.required=false;
+                  painkillerDetails.value = "";
                 }
               });
 
