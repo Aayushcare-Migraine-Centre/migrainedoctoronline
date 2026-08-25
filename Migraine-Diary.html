@@ -974,10 +974,14 @@ allEntries[entry.date] = {
               if (intensity === "Low") cell.classList.add('saved-low');
 
               // 💊 Show icon if painkiller = Yes
-              if (painkiller === "Yes") {
+              if (painkiller === "Yes" || painkiller === "Injection") {
                 const icon = document.createElement("span");
                 icon.className = "painkiller-icon";
-                icon.textContent = "💊";
+                if (painkiller === "Injection") {
+                  icon.textContent = "💉"; // Syringe
+                } else {
+                  icon.textContent = "💊"; // Tablet
+                }
                 cell.appendChild(icon);
               }
             }
