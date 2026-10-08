@@ -591,6 +591,13 @@
                           <label>Date</label>
                           <div id="selectedDate" style="font-weight:700"></div>
                         </div>
+                        <!-- Q3: Condition -->
+                        <div class="field">
+                          <label for="condition">Condition</label>
+                          <select id="condition" required>
+                            <option value="">Select</option>
+                          </select>
+                        </div>
                         <!-- Q1: Duration -->
                         <div class="field">
                           <label for="duration">Duration</label>
@@ -631,13 +638,23 @@
 </div>
 
 <!-- Q4: Vertigo -->
-<div class="field">
+<!-- <div class="field">
   <label for="vertigo">Vertigo?</label>
   <select id="vertigo" required>
     <option value="">Select</option>
     <option value="Yes">Yes</option>
     <option value="No">No</option>
   </select>
+</div> -->
+<!-- Q4: Notes -->
+<div class="field">
+  <label for="notes">Notes</label>
+  <input
+    type="text"
+    id="notes"
+    placeholder="Enter notes"
+    maxlength="100"
+  />
 </div>
                         <div class="actions">
                           <button class="btn" id="saveBtn">Save</button>
@@ -843,11 +860,13 @@ patientInput.addEventListener("input", () => {
 const fields = JSON.stringify([
   "name",
   "date",
+  "condition",
   "duration",
   "intensity",
   "pain_killer",
   "pain_killer_details",
   "vertigo",
+  "remarks",
   "creation"
 ]);
 
@@ -872,11 +891,13 @@ const fields = JSON.stringify([
                   json.data.forEach(entry => {
 allEntries[entry.date] = {
   name: entry.name,
+  condition: entry.condition,
   duration: entry.duration,
   intensity: entry.intensity,
   painkiller: entry.pain_killer,
   painkillerDetails: entry.pain_killer_details,
   vertigo: entry.vertigo,
+  notes: entry.remarks,
   creation: entry.creation
 };     });
                 }
@@ -899,12 +920,14 @@ allEntries[entry.date] = {
               const panel=document.getElementById('panel');
               const closePanel=document.getElementById('closePanel');
               const selectedDateEl=document.getElementById('selectedDate');
+              const condition = document.getElementById('condition');
               const duration=document.getElementById('duration');
               const intensity=document.getElementById('intensity');
               const painkiller=document.getElementById('painkiller');
               const painkillerDetails=document.getElementById('painkillerDetails');
               const painkillerDetailsField=document.getElementById('painkillerDetailsField');
-              const vertigo=document.getElementById('vertigo');
+              // const vertigo=document.getElementById('vertigo');
+              const notes = document.getElementById('notes');
               const saveBtn=document.getElementById('saveBtn');
 
             // Fill duration dropdown (Custom Ranges)
@@ -923,6 +946,19 @@ allEntries[entry.date] = {
               opt.value = text;
               opt.textContent = text;
               duration.appendChild(opt);
+            });
+
+            const conditionOptions = [
+              "Migraine",
+              "Vertigo",
+              "Both"
+            ];
+
+            conditionOptions.forEach(text => {
+              const opt = document.createElement("option");
+              opt.value = text;
+              opt.textContent = text;
+              condition.appendChild(opt);
             });
 
 
@@ -1031,11 +1067,13 @@ allEntries[entry.date] = {
               const all = await loadAll();
               const data = all[key] || {};
 
+              condition.value = data.condition || '';
+              notes.value = data.notes || '';
               duration.value = data.duration || '';
               intensity.value = data.intensity || '';
               painkiller.value = data.painkiller || '';
               painkillerDetails.value = data.painkillerDetails || '';
-              vertigo.value = data.vertigo || '';
+              // vertigo.value = data.vertigo || '';
               painkiller.dispatchEvent(new Event('change'));
 
         if (all[key]) {
@@ -1045,22 +1083,28 @@ allEntries[entry.date] = {
           if (!editable) {
             duration.disabled = true;
             intensity.disabled = true;
+            notes.disabled = true;
             painkiller.disabled = true;
+            condition.disabled = true;
             painkillerDetails.disabled = true;
-            vertigo.disabled = true;
+            // vertigo.disabled = true;
             saveBtn.style.display = "none";
           } else {
             duration.disabled = false;
             intensity.disabled = false;
+            condition.disabled = false;
+            notes.disabled = false;
             painkiller.disabled = false;
             painkillerDetails.disabled = false;
-            vertigo.disabled = false;
+            // vertigo.disabled = false;
             saveBtn.style.display = "block";
           }
 
         } else {
                 duration.disabled = false;
                 intensity.disabled = false;
+                condition.disabled = false;
+                notes.disabled = false;
                 painkiller.disabled = false;
                 painkillerDetails.disabled = false;
                 saveBtn.style.display = "block";
@@ -1076,8 +1120,8 @@ allEntries[entry.date] = {
       if (
         !duration.value ||
         !intensity.value ||
+        !condition.value ||
         !painkiller.value ||
-        !vertigo.value ||
         (painkiller.value === "Yes" && !painkillerDetails.value)
       ) {
         alert("Please fill all required fields");
@@ -1086,14 +1130,20 @@ allEntries[entry.date] = {
 
       const existing = allEntries[activeKey];
 
+const vertigoValue = 
+  condition.value === "Vertigo" || condition.value === "Both"
+    ? "Yes"
+    : "No";
 const payload = {
   patient: window.loggedInPatientId,
   date: activeKey,
   duration: duration.value,
   intensity: intensity.value,
+  condition: condition.value,
   pain_killer: painkiller.value,
   pain_killer_details: painkillerDetails.value,
-  vertigo: vertigo.value
+  vertigo: vertigoValue,
+  remarks: notes.value
 };
 
       try {
@@ -1147,9 +1197,11 @@ allEntries[activeKey] = {
   creation: existing?.creation || json.data.creation,
   duration: payload.duration,
   intensity: payload.intensity,
+  condition: payload.condition,
   painkiller: payload.pain_killer,
   painkillerDetails: payload.pain_killer_details,
-  vertigo: payload.vertigo
+  vertigo: payload.vertigo,
+  notes: payload.remarks
 };
 
         showSuccessToast();
